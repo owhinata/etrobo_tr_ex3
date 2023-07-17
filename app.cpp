@@ -4,14 +4,16 @@
  *  Implementation of the Task main_task
  *  Author: Kazuhiro.Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #include "app.h"
 #include "RandomWalker.h"
+#include "Diagnostics.h"
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
-void *__dso_handle=0;
+//void *__dso_handle=0;
 
 // using宣言
 using ev3api::ColorSensor;
@@ -27,7 +29,16 @@ Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
 Clock       gClock;
 
+// TODO: move with the use case
+#include "GyroSensor.h"
+using ev3api::GyroSensor;
+GyroSensor gGyroSensr(PORT_4);
+//#include "SonarSensor.h"
+//using ev3api::SonarSensor;
+//SonarSensor gSonarSensor(PORT_3);
+
 // オブジェクトの定義
+static Diagnostics     *gDiagnostics;
 static Walker          *gWalker;
 static LineMonitor     *gLineMonitor;
 static Starter         *gStarter;
@@ -37,6 +48,8 @@ static LineTracer      *gLineTracer;
 static Scenario        *gScenario;
 static ScenarioTracer  *gScenarioTracer;
 static RandomWalker    *gRandomWalker;
+
+static int diag_exit_;
 
 // scene object
 static Scene gScenes[] = {
@@ -54,13 +67,15 @@ static void user_system_create() {
     tslp_tsk(2U * 1000U);
 
     // オブジェクトの作成
+    gDiagnostics     = new Diagnostics();
     gWalker          = new Walker(gLeftWheel,
-                                  gRightWheel);
+                                  gRightWheel,
+                                  gDiagnostics);
     gStarter         = new Starter(gTouchSensor);
     gLineMonitor     = new LineMonitor(gColorSensor);
     gScenarioTimer   = new SimpleTimer(gClock);
     gWalkerTimer     = new SimpleTimer(gClock);
-    gLineTracer      = new LineTracer(gLineMonitor, gWalker);
+    gLineTracer      = new LineTracer(gLineMonitor, gWalker, gDiagnostics);
     gScenario        = new Scenario(0);
     gScenarioTracer  = new ScenarioTracer(gWalker,
                                           gScenario,
@@ -94,6 +109,7 @@ static void user_system_destroy() {
     delete gLineMonitor;
     delete gStarter;
     delete gWalker;
+    delete gDiagnostics;
 }
 
 /**
@@ -110,6 +126,10 @@ void main_task(intptr_t unused) {
     // 周期ハンドラ停止
     stp_cyc(CYC_TRACER);
 
+    ++diag_exit_;
+    wup_tsk(DIAGNOSTICS_TASK);
+    tslp_tsk(10U * 1000U);
+
     user_system_destroy();  // 終了処理
 
     ext_tsk();
@@ -123,7 +143,16 @@ void tracer_task(intptr_t exinf) {
         wup_tsk(MAIN_TASK);  // バックボタン押下
     } else {
         gRandomWalker->run();  // 走行
+        wup_tsk(DIAGNOSTICS_TASK);
     }
 
+    ext_tsk();
+}
+
+void diagnostics_task(intptr_t exinf) {
+    while (1) {
+        slp_tsk();
+        gDiagnostics->Commit();
+    }
     ext_tsk();
 }

@@ -8,11 +8,15 @@ APPL_CXXOBJS += \
 	RandomWalker.o \
 	LineMonitor.o \
 	Starter.o \
-	SimpleTimer.o
+	SimpleTimer.o \
+	Diagnostics.o
 
 SRCLANG := c++
 
 ifdef CONFIG_EV3RT_APPLICATION
+	ifeq ($(TARGET),raspi_gcc)
+		APPL_LIBS += -lhiredis
+	endif
 
 # Include libraries
 include $(EV3RT_SDK_LIB_DIR)/libcpp-ev3/Makefile

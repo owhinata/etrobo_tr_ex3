@@ -4,6 +4,7 @@
  *  Definition of the Task main_task
  *  Author: Kazuhiro.Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #ifdef __cplusplus
@@ -32,7 +33,7 @@ extern "C" {
 
 extern void main_task(intptr_t exinf);
 extern void tracer_task(intptr_t exinf);
-extern void ev3_cyc_tracer(intptr_t exinf);
+extern void diagnostics_task(intptr_t exinf);
 
 #endif /* TOPPERS_MACRO_ONLY */
 
