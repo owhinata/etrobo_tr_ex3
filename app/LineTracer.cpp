@@ -4,6 +4,7 @@
  *  Implementation of the Class LineTracer
  *  Author: Kazuhiro Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #include "LineTracer.h"
@@ -11,12 +12,12 @@
 /**
  * コンストラクタ
  * @param lineMonitor     ライン判定
- * @param walker 走行
+ * @param LineWalker 走行
  */
 LineTracer::LineTracer(const LineMonitor* lineMonitor,
-                       Walker* walker)
+                       LineWalker* lineWalker)
     : mLineMonitor(lineMonitor),
-      mWalker(walker),
+      mLineWalker(lineWalker),
       mIsInitialized(false) {
 }
 
@@ -25,7 +26,7 @@ LineTracer::LineTracer(const LineMonitor* lineMonitor,
  */
 void LineTracer::run() {
     if (mIsInitialized == false) {
-        mWalker->init();
+        mLineWalker->init();
         mIsInitialized = true;
     }
 
@@ -34,10 +35,10 @@ void LineTracer::run() {
     // 走行体の向きを計算する
     int direction = calcDirection(isOnLine);
 
-    mWalker->setCommand(Walker::LOW, direction);
+    mLineWalker->setCommand(LineWalker::LOW, direction);
 
     // 走行を行う
-    mWalker->run();
+    mLineWalker->run();
 }
 
 /**
@@ -49,9 +50,9 @@ void LineTracer::run() {
 int LineTracer::calcDirection(bool isOnLine) {
     if (isOnLine) {
         // ライン上にある場合
-        return Walker::RIGHT;
+        return LineWalker::RIGHT;
     } else {
         // ライン外にある場合
-        return Walker::LEFT;
+        return LineWalker::LEFT;
     }
 }

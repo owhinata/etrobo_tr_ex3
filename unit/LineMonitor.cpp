@@ -4,6 +4,7 @@
  *  Definition of the Class LineMonitor
  *  Author: Kazuhiro Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #include "LineMonitor.h"
@@ -42,4 +43,18 @@ bool LineMonitor::isOnLine() const {
  */
 void LineMonitor::setThreshold(int8_t threshold) {
     mThreshold = threshold;
+}
+
+/**
+ * カラーセンサー値の緑色を取得する
+ * 
+*/
+uint16_t LineMonitor::getGreenRaw() {
+    rgb_raw_t rgb;  // rgb構造体
+    uint16_t green; // 緑の値用変数
+
+    // カラーセンサーからrgb値を取得し、緑色の値を返す
+    mColorSensor.getRawColor(&rgb);
+    green = rgb.g
+    return green;
 }

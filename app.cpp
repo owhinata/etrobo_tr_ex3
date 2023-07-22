@@ -4,6 +4,7 @@
  *  Implementation of the Task main_task
  *  Author: Kazuhiro.Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #include "app.h"
@@ -11,7 +12,7 @@
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
-void *__dso_handle=0;
+// void *__dso_handle=0;
 
 // using宣言
 using ev3api::ColorSensor;
