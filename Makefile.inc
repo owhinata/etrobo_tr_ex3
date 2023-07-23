@@ -9,13 +9,18 @@ APPL_CXXOBJS += \
 	LineMonitor.o \
 	Starter.o \
 	SimpleTimer.o \
-	Diagnostics.o
+	Diagnostics.o \
+	Control.o \
+	etrobo_control.grpc.pb.o \
+	etrobo_control.pb.o
 
 SRCLANG := c++
 
 ifdef CONFIG_EV3RT_APPLICATION
 	ifeq ($(TARGET),raspi_gcc)
-		APPL_LIBS += -lhiredis
+		APPL_LIBS += -lhiredis -lprotobuf -lgrpc++ -lpthread\
+									-Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed\
+									-ldl
 	endif
 
 # Include libraries

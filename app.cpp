@@ -10,6 +10,7 @@
 #include "app.h"
 #include "RandomWalker.h"
 #include "Diagnostics.h"
+#include "Control.h"
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
@@ -39,6 +40,7 @@ GyroSensor gGyroSensr(PORT_4);
 
 // オブジェクトの定義
 static Diagnostics     *gDiagnostics;
+static Control         *gControl;
 static Walker          *gWalker;
 static LineMonitor     *gLineMonitor;
 static Starter         *gStarter;
@@ -68,6 +70,9 @@ static void user_system_create() {
 
     // オブジェクトの作成
     gDiagnostics     = new Diagnostics();
+    gControl         = new Control();
+    gControl->RunServer();
+
     gWalker          = new Walker(gLeftWheel,
                                   gRightWheel,
                                   gDiagnostics);
