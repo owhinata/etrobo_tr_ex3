@@ -46,15 +46,9 @@ void LineMonitor::setThreshold(int8_t threshold) {
 }
 
 /**
- * カラーセンサー値の緑色を取得する
- * 
-*/
-uint16_t LineMonitor::getGreenRaw() {
-    rgb_raw_t rgb;  // rgb構造体
-    uint16_t green; // 緑の値用変数
-
-    // カラーセンサーからrgb値を取得し、緑色の値を返す
-    mColorSensor.getRawColor(&rgb);
-    green = rgb.g
-    return green;
+ * カラーセンサから反射光の強さを取得する
+ * @return 反射光の強さ（0-100）
+ */
+int8_t LineMonitor::getBrightness() const {
+    return mColorSensor.getBrightness();
 }

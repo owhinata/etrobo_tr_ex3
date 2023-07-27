@@ -102,13 +102,13 @@ void RandomWalker::execWaitingForStart() {
 void RandomWalker::execLineTracing() {
     mLineTracer->run();
 
-    if (mSimpleTimer->isTimedOut()) {
-        mSimpleTimer->stop();
+    // if (mSimpleTimer->isTimedOut()) {
+    //     mSimpleTimer->stop();
 
-        mState = SCENARIO_TRACING;
+    //     mState = SCENARIO_TRACING;
 
-        modeChangeAction();
-    }
+    //     modeChangeAction();
+    // }
 }
 
 /**

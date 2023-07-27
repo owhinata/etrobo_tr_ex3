@@ -24,8 +24,6 @@ private:
     const LineMonitor* mLineMonitor;
     LineWalker* mLineWalker;
     bool mIsInitialized;
-
-    int calcDirection(bool isOnLine);
 };
 
 #endif  // EV3_APP_LINETRACER_H_

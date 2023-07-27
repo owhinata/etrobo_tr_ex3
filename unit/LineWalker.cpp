@@ -2,7 +2,7 @@
  *  LineWalker.cpp (for LEGO Mindstorms EV3)
  *  Created on: 2023/07/22
  *  Implementation of the Class LineWalker
- *  Author: Risei.Kodo
+ *  Author: Risei Kodo
  *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
@@ -11,6 +11,10 @@
 // 定数宣言
 const int LineWalker::RIGHT_EDGE  = 1;      // 左エッジ
 const int LineWalker::LEFT_EDGE   = -1;     // 右エッジ
+const int LineWalker::WHITE_BRIGHTNESS  = 30;      // カラーセンサの輝度設定用
+const int LineWalker::BLACK_BRIGHTNESS  = 10;      // カラーセンサの輝度設定用
+const float LineWalker::STEERING_COEF  = 0.9;      // ステアリング操舵量の係数
+const int LineWalker::BASE_SPEED  = 40;      // 走行標準スピード
 
 /**
  * コンストラクタ
@@ -20,32 +24,23 @@ const int LineWalker::LEFT_EDGE   = -1;     // 右エッジ
 LineWalker::LineWalker(ev3api::Motor& leftWheel,
                                  ev3api::Motor& rightWheel)
     : mLeftWheel(leftWheel),
-      mRightWheel(rightWheel),
-      mForward(LOW),
-      mTurn(RIGHT) {
+      mRightWheel(rightWheel), 
+      mEdge(LEFT_EDGE) {
 }
 
 /**
  * 走行する
  */
-void LineWalker::run() {
-    // 左右モータに回転を指示する
-    int rightPWM = 0;
-    int leftPWM = 0;
-    
-    if(mTurn == RIGHT) {
-        rightPWM = 0;
-        leftPWM = mForward;
-    } else if(mTurn == LEFT) {
-        rightPWM = mForward;
-        leftPWM = 0;
-    } else {
-        rightPWM = mForward;
-        leftPWM = mForward;
-    }
-    
-    mRightWheel.setPWM(rightPWM);
-    mLeftWheel.setPWM(leftPWM);
+void LineWalker::run(int16_t steeringAmount) {
+    int leftMotorPower, rightMotorPower;  // 左右モータ設定パワー
+
+    /* 左右モータ駆動パワーの計算 */
+    leftMotorPower = (int)(BASE_SPEED + (steeringAmount * mEdge));
+    rightMotorPower = (int)(BASE_SPEED - (steeringAmount * mEdge));
+
+    /* 左右モータ駆動パワーの設定 */
+    mLeftWheel.setPWM(leftMotorPower);
+    mRightWheel.setPWM(rightMotorPower);
 }
 
 /**
@@ -58,11 +53,33 @@ void LineWalker::init() {
 }
 
 /**
- * PWM値を設定する
- * @param forward 前進値
- * @param turn    旋回方向
+ * 反射光の強さを設定する
+ * @param brightness 反射光の強さ
  */
-void LineWalker::setCommand(int forward, int turn) {
-    mForward = forward;
-    mTurn    = turn;
+void LineWalker::setCommand(int brightness) {
+    mBrightness = brightness;
+}
+
+/**
+ * ステアリング操舵量の計算をする
+ * @return ステアリング操舵量
+ */
+int16_t LineWalker::steeringAmountCalculation() {
+
+    int targetBrightness;      // 目標輝度値
+    float32_t diffBrightness;  // 目標輝度との差分値
+    int16_t steeringAmount;    // ステアリング操舵量
+
+    /* 目標輝度値の計算 */
+    // targetBrightness = (WHITE_BRIGHTNESS - BLACK_BRIGHTNESS) / 2;
+    targetBrightness = 17;
+
+    /* 目標輝度値と反射光の強さの差分を計算 */
+    // diffBrightness = (float32_t)(targetBrightness - mBrightness);
+    diffBrightness = (float32_t)(mBrightness - targetBrightness);
+
+    /* ステアリング操舵量を計算 */
+    steeringAmount = (int16_t)(diffBrightness * STEERING_COEF);
+
+    return steeringAmount;
 }

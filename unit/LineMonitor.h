@@ -19,7 +19,7 @@ public:
 
     bool isOnLine() const;
     void setThreshold(int8_t threshold);
-    uint16_t getGreenRaw();
+    int8_t getBrightness() const;
 
 private:
     static const int8_t INITIAL_THRESHOLD;

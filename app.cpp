@@ -30,6 +30,7 @@ Clock       gClock;
 
 // オブジェクトの定義
 static Walker          *gWalker;
+static LineWalker      *gLineWalker;
 static LineMonitor     *gLineMonitor;
 static Starter         *gStarter;
 static SimpleTimer     *gScenarioTimer;
@@ -57,11 +58,13 @@ static void user_system_create() {
     // オブジェクトの作成
     gWalker          = new Walker(gLeftWheel,
                                   gRightWheel);
+    gLineWalker      = new LineWalker(gLeftWheel,
+                                      gRightWheel);
     gStarter         = new Starter(gTouchSensor);
     gLineMonitor     = new LineMonitor(gColorSensor);
     gScenarioTimer   = new SimpleTimer(gClock);
     gWalkerTimer     = new SimpleTimer(gClock);
-    gLineTracer      = new LineTracer(gLineMonitor, gWalker);
+    gLineTracer      = new LineTracer(gLineMonitor, gLineWalker);
     gScenario        = new Scenario(0);
     gScenarioTracer  = new ScenarioTracer(gWalker,
                                           gScenario,
@@ -95,6 +98,7 @@ static void user_system_destroy() {
     delete gLineMonitor;
     delete gStarter;
     delete gWalker;
+    delete gLineWalker;
 }
 
 /**
