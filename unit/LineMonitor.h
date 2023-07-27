@@ -4,6 +4,7 @@
  *  Definition of the Class LineMonitor
  *  Author: Kazuhiro Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #ifndef EV3_UNIT_LINEMONITOR_H_
@@ -18,6 +19,7 @@ public:
 
     bool isOnLine() const;
     void setThreshold(int8_t threshold);
+    int8_t getBrightness() const;
 
 private:
     static const int8_t INITIAL_THRESHOLD;

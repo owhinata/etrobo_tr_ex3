@@ -4,6 +4,7 @@
  *  Implementation of the Task main_task
  *  Author: Kazuhiro.Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #include "app.h"
@@ -11,7 +12,7 @@
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
-void *__dso_handle=0;
+// void *__dso_handle=0;
 
 // using宣言
 using ev3api::ColorSensor;
@@ -29,6 +30,7 @@ Clock       gClock;
 
 // オブジェクトの定義
 static Walker          *gWalker;
+static LineWalker      *gLineWalker;
 static LineMonitor     *gLineMonitor;
 static Starter         *gStarter;
 static SimpleTimer     *gScenarioTimer;
@@ -56,11 +58,13 @@ static void user_system_create() {
     // オブジェクトの作成
     gWalker          = new Walker(gLeftWheel,
                                   gRightWheel);
+    gLineWalker      = new LineWalker(gLeftWheel,
+                                      gRightWheel);
     gStarter         = new Starter(gTouchSensor);
     gLineMonitor     = new LineMonitor(gColorSensor);
     gScenarioTimer   = new SimpleTimer(gClock);
     gWalkerTimer     = new SimpleTimer(gClock);
-    gLineTracer      = new LineTracer(gLineMonitor, gWalker);
+    gLineTracer      = new LineTracer(gLineMonitor, gLineWalker);
     gScenario        = new Scenario(0);
     gScenarioTracer  = new ScenarioTracer(gWalker,
                                           gScenario,
@@ -94,6 +98,7 @@ static void user_system_destroy() {
     delete gLineMonitor;
     delete gStarter;
     delete gWalker;
+    delete gLineWalker;
 }
 
 /**

@@ -4,6 +4,7 @@
  *  Implementation of the Class LineTracer
  *  Author: Kazuhiro Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #include "LineTracer.h"
@@ -11,12 +12,12 @@
 /**
  * コンストラクタ
  * @param lineMonitor     ライン判定
- * @param walker 走行
+ * @param LineWalker 走行
  */
 LineTracer::LineTracer(const LineMonitor* lineMonitor,
-                       Walker* walker)
+                       LineWalker* lineWalker)
     : mLineMonitor(lineMonitor),
-      mWalker(walker),
+      mLineWalker(lineWalker),
       mIsInitialized(false) {
 }
 
@@ -25,33 +26,15 @@ LineTracer::LineTracer(const LineMonitor* lineMonitor,
  */
 void LineTracer::run() {
     if (mIsInitialized == false) {
-        mWalker->init();
+        mLineWalker->init();
         mIsInitialized = true;
     }
 
-    bool isOnLine = mLineMonitor->isOnLine();
-
-    // 走行体の向きを計算する
-    int direction = calcDirection(isOnLine);
-
-    mWalker->setCommand(Walker::LOW, direction);
+    // 反射光の強さを取得する
+    int brightness = (int)mLineMonitor->getBrightness();
+    mLineWalker->setCommand(brightness);
 
     // 走行を行う
-    mWalker->run();
-}
-
-/**
- * 走行体の向きを計算する
- * @param isOnLine true:ライン上/false:ライン外
- * @retval RIGHT  ライン上にある場合(右旋回指示)
- * @retval LEFT ライン外にある場合(左旋回指示)
- */
-int LineTracer::calcDirection(bool isOnLine) {
-    if (isOnLine) {
-        // ライン上にある場合
-        return Walker::RIGHT;
-    } else {
-        // ライン外にある場合
-        return Walker::LEFT;
-    }
+    int16_t steeringAmount = mLineWalker->steeringAmountCalculation();
+    mLineWalker->run(steeringAmount);
 }

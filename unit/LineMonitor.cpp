@@ -4,6 +4,7 @@
  *  Definition of the Class LineMonitor
  *  Author: Kazuhiro Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #include "LineMonitor.h"
@@ -42,4 +43,12 @@ bool LineMonitor::isOnLine() const {
  */
 void LineMonitor::setThreshold(int8_t threshold) {
     mThreshold = threshold;
+}
+
+/**
+ * カラーセンサから反射光の強さを取得する
+ * @return 反射光の強さ（0-100）
+ */
+int8_t LineMonitor::getBrightness() const {
+    return mColorSensor.getBrightness();
 }
