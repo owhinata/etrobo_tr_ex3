@@ -70,15 +70,22 @@ void Diagnostics::Commit() {
   if (ctx_->invalidate) {
 #ifdef MAKE_RASPIKE
     if (ctx_->redis) {
-      void *r =
-          redisCommand(ctx_->redis, "XADD %s * AA %d BA %u BB %u BC %u BD %d "
-                       "CA %u CB %u DA %u EA %d EB %d FA %d FB %d",
-                       ctx_->key, ctx_->elapsed, ctx_->color.r, ctx_->color.g,
-                       ctx_->color.b, ctx_->color.brightness, ctx_->gyro.angle,
-                       ctx_->gyro.rate, ctx_->ultrasonic.distance,
-                       ctx_->left_motor.count, ctx_->left_motor.power,
-                       ctx_->right_motor.count, ctx_->right_motor.power);
-      freeReplyObject(r);
+      //void *r =
+      //    redisCommand(ctx_->redis, "XADD %s * AA %d BA %u BB %u BC %u BD %d "
+      //                 "CA %u CB %u DA %u EA %d EB %d FA %d FB %d",
+      //                 ctx_->key, ctx_->elapsed, ctx_->color.r, ctx_->color.g,
+      //                 ctx_->color.b, ctx_->color.brightness, ctx_->gyro.angle,
+      //                 ctx_->gyro.rate, ctx_->ultrasonic.distance,
+      //                 ctx_->left_motor.count, ctx_->left_motor.power,
+      //                 ctx_->right_motor.count, ctx_->right_motor.power);
+      //freeReplyObject(r);
+      printf("XADD %s * AA %d BA %u BB %u BC %u BD %d "
+                   "CA %u CB %u DA %u EA %d EB %d FA %d FB %d\n",
+                   ctx_->key, ctx_->elapsed, ctx_->color.r, ctx_->color.g,
+                   ctx_->color.b, ctx_->color.brightness, ctx_->gyro.angle,
+                   ctx_->gyro.rate, ctx_->ultrasonic.distance,
+                   ctx_->left_motor.count, ctx_->left_motor.power,
+                   ctx_->right_motor.count, ctx_->right_motor.power);
     }
 #endif
   }
