@@ -11,24 +11,25 @@
 #define EV3_APP_LINETRACER_H_
 
 #include "LineMonitor.h"
-#include "Walker.h"
+#include "LineWalker.h"
+#include "Diagnostics.h"
 
 class Diagnostics;
 
 class LineTracer {
 public:
     LineTracer(const LineMonitor* lineMonitor,
-               Walker* walker);
+               LineWalker* lineWalker);
 
     LineTracer(const LineMonitor* lineMonitor,
-               Walker* walker,
+               LineWalker* walker,
                Diagnostics* diag);
 
     void run();
 
 private:
     const LineMonitor* mLineMonitor;
-    Walker* mWalker;
+    LineWalker* mLineWalker;
     bool mIsInitialized;
 
     Diagnostics* diag_;

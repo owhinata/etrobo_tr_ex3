@@ -13,7 +13,7 @@
 
 // デストラクタ問題の回避
 // https://github.com/ETrobocon/etroboEV3/wiki/problem_and_coping
-//void *__dso_handle=0;
+// void *__dso_handle=0;
 
 // using宣言
 using ev3api::ColorSensor;
@@ -40,6 +40,7 @@ GyroSensor gGyroSensr(PORT_4);
 // オブジェクトの定義
 static Diagnostics     *gDiagnostics;
 static Walker          *gWalker;
+static LineWalker      *gLineWalker;
 static LineMonitor     *gLineMonitor;
 static Starter         *gStarter;
 static SimpleTimer     *gScenarioTimer;
@@ -71,11 +72,14 @@ static void user_system_create() {
     gWalker          = new Walker(gLeftWheel,
                                   gRightWheel,
                                   gDiagnostics);
+    gLineWalker      = new LineWalker(gLeftWheel,
+                                      gRightWheel,
+                                  gDiagnostics);
     gStarter         = new Starter(gTouchSensor);
     gLineMonitor     = new LineMonitor(gColorSensor);
     gScenarioTimer   = new SimpleTimer(gClock);
     gWalkerTimer     = new SimpleTimer(gClock);
-    gLineTracer      = new LineTracer(gLineMonitor, gWalker, gDiagnostics);
+    gLineTracer      = new LineTracer(gLineMonitor, gLineWalker, gDiagnostics);
     gScenario        = new Scenario(0);
     gScenarioTracer  = new ScenarioTracer(gWalker,
                                           gScenario,
@@ -110,6 +114,7 @@ static void user_system_destroy() {
     delete gStarter;
     delete gWalker;
     delete gDiagnostics;
+    delete gLineWalker;
 }
 
 /**
