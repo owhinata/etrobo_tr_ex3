@@ -87,7 +87,8 @@ static void user_system_create() {
     gRandomWalker    = new RandomWalker(gLineTracer,
                                         gScenarioTracer,
                                         gStarter,
-                                        gWalkerTimer);
+                                        gWalkerTimer,
+                                        gDiagnostics);
 
     // シナリオを構築する
     for (uint32_t i = 0; i < (sizeof(gScenes)/sizeof(gScenes[0])); i++) {

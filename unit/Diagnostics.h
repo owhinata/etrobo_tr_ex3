@@ -6,6 +6,8 @@
 #ifndef EV3_APP_DIAGNOSTICS_H_
 #define EV3_APP_DIAGNOSTICS_H_
 
+#include "ColorSensor.h"
+
 enum ColorSensorMode {
   kReflect,
   kRgbRaw,

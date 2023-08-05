@@ -15,12 +15,21 @@
 #include "LineTracer.h"
 #include "ScenarioTracer.h"
 
+#include "Diagnostics.h"
+#include "LineMonitor.h"
+
 class RandomWalker {
 public:
     RandomWalker(LineTracer* lineTracer,
                  ScenarioTracer* scenarioTracer,
                  const Starter* starter,
                  SimpleTimer* simpleTimer);
+
+    RandomWalker(LineTracer* lineTracer,
+                 ScenarioTracer* scenarioTracer,
+                 const Starter* starter,
+                 SimpleTimer* simpleTimer,
+                 Diagnostics* diag);
 
     void run();
 
@@ -40,6 +49,8 @@ private:
     const Starter* mStarter;
     SimpleTimer* mSimpleTimer;
     State mState;
+
+    Diagnostics* mDiag;
 
     int getRandomTime();
     void modeChangeAction();

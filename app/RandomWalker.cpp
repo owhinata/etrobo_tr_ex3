@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "Clock.h"
 
+#include "Diagnostics.h"
 #include "RandomWalker.h"
 
 // 定数宣言
@@ -38,10 +39,29 @@ RandomWalker::RandomWalker(LineTracer* lineTracer,
     delete clock;
 }
 
+RandomWalker::RandomWalker(LineTracer* lineTracer,
+                           ScenarioTracer* scenarioTracer,
+                           const Starter* starter,
+                           SimpleTimer* simpleTimer,
+                           Diagnostics* diag)
+    : mLineTracer(lineTracer),
+      mScenarioTracer(scenarioTracer),
+      mStarter(starter),
+      mSimpleTimer(simpleTimer),
+      mState(UNDEFINED),
+      mDiag(diag) {
+    ev3api::Clock* clock = new ev3api::Clock();
+
+    srand(clock->now());  // 乱数をリセットする
+
+    delete clock;
+}
+
 /**
  * ランダム走行する
  */
 void RandomWalker::run() {
+    //mDiag->MonitorColorSensor(ColorSensorMode::kReflect);
     switch (mState) {
     case UNDEFINED:
         execUndefined();

@@ -44,7 +44,7 @@ void LineTracer::run() {
         mIsInitialized = true;
     }
     if (diag_) {
-      diag_->MonitorColorSensor(ColorSensorMode::kReflect);
+      diag_->MonitorColorSensor(ColorSensorMode::kRgbRaw);
       diag_->MonitorGyroSensor();
     }
 
