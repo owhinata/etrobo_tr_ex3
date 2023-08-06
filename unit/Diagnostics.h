@@ -9,8 +9,8 @@
 #include "ColorSensor.h"
 
 enum ColorSensorMode {
-  kReflect,
-  kRgbRaw,
+  kColorSensorModeReflect,
+  kColorSensorModeRgbRaw,
 };
 
 class Diagnostics {
@@ -25,14 +25,14 @@ public:
 
   void Commit();
 
-  Diagnostics(const Diagnostics&) = delete;
-  Diagnostics& operator=(const Diagnostics&) = delete;
-
 private:
   struct Context;
   Context *ctx_;
 
   void Invalidate();
+
+  Diagnostics(const Diagnostics&);
+  Diagnostics& operator=(const Diagnostics&);
 };
 
 #endif // EV3_APP_DIAGNOSTICS_H_

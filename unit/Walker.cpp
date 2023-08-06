@@ -36,8 +36,11 @@ Walker::Walker(ev3api::Motor& leftWheel,
 Walker::Walker(ev3api::Motor& leftWheel,
                                  ev3api::Motor& rightWheel,
                                  Diagnostics* diag)
-    : Walker(leftWheel, rightWheel) {
-    diag_ = diag;
+    : mLeftWheel(leftWheel),
+      mRightWheel(rightWheel),
+      mForward(LOW),
+      mTurn(RIGHT),
+      diag_(diag) {
 }
 
 /**

@@ -4,11 +4,7 @@
  *  Implementation of the Class LineTracer
  *  Author: Kazuhiro Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
-<<<<<<< HEAD
- *  Copyright (c) 2023 Emtech Inc.
-=======
  *  Copyright (c) 2023 Emtechs Inc.
->>>>>>> feature/pid/20230722
  *****************************************************************************/
 
 #include "LineTracer.h"
@@ -31,8 +27,10 @@ LineTracer::LineTracer(const LineMonitor* lineMonitor,
 LineTracer::LineTracer(const LineMonitor* lineMonitor,
                        LineWalker* walker,
                        Diagnostics* diag)
-    : LineTracer(lineMonitor, walker) {
-    diag_ = diag;
+    : mLineMonitor(lineMonitor),
+      mLineWalker(walker),
+      mIsInitialized(false),
+      diag_(diag) {
 }
 
 /**
@@ -44,7 +42,7 @@ void LineTracer::run() {
         mIsInitialized = true;
     }
     if (diag_) {
-      diag_->MonitorColorSensor(ColorSensorMode::kRgbRaw);
+      diag_->MonitorColorSensor(kColorSensorModeRgbRaw);
       diag_->MonitorGyroSensor();
     }
 

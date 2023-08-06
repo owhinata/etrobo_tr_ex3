@@ -5,89 +5,76 @@
 
 #include "Diagnostics.h"
 
-#ifdef MAKE_RASPIKE
-#include <hiredis/hiredis.h>
 #include <stdio.h>
+#include <string.h>
+#ifdef MAKE_RASPIKE
 #include <time.h>
 #endif
 
 #include "ev3api.h"
 
-static constexpr sensor_port_t kColorSensorPort = EV3_PORT_2;
-static constexpr sensor_port_t kGyroSensorPort = EV3_PORT_4;
-static constexpr sensor_port_t kSonarSensorPort = EV3_PORT_3;
-static constexpr motor_port_t kLeftMotorPort = EV3_PORT_C;
-static constexpr motor_port_t kRightMotorPort = EV3_PORT_B;
+static const sensor_port_t kColorSensorPort = EV3_PORT_2;
+static const sensor_port_t kGyroSensorPort = EV3_PORT_4;
+static const sensor_port_t kSonarSensorPort = EV3_PORT_3;
+static const motor_port_t kLeftMotorPort = EV3_PORT_C;
+static const motor_port_t kRightMotorPort = EV3_PORT_B;
 
 struct Diagnostics::Context {
   struct {
     uint16_t r, g, b;
     int8_t brightness;
-  } color = {};
+  } color;
   struct {
     uint16_t angle, rate;
-  } gyro = {};
+  } gyro;
   struct {
     uint16_t distance;
-  } ultrasonic = {};
+  } ultrasonic;
   struct {
     int count, power;
-  } left_motor = {}, right_motor = {};
-  int invalidate = 0;
-  uint32_t elapsed = 0;
-  SYSTIM start = 0;
-#ifdef MAKE_RASPIKE
-  redisContext *redis = 0;
-  char key[29] = {};
-#endif
+  } left_motor, right_motor;
+  int invalidate;
+  uint32_t elapsed;
+  SYSTIM start;
+  FILE *fp;
+  char key[29];
 };
 
 Diagnostics::Diagnostics() : ctx_(new Context) {
+  char file[36];
+  memset(ctx_, 0, sizeof(*ctx_));
 #ifdef MAKE_RASPIKE
-  redisContext *c = redisConnect("localhost", 6379);
-  if (c && c->err) {
-    redisFree(c);
-  } else {
-    printf("Connect to redis\n");
-    ctx_->redis = c;
-  }
   time_t now = time(0);
-  strftime(ctx_->key, sizeof(ctx_->key), R"("EtRobo %F %T")", localtime(&now));
+  strftime(ctx_->key, sizeof(ctx_->key), "\"EtRobo %F %T\"", localtime(&now));
+  strftime(file, sizeof(file), "EtRobo_%F_%T.log", localtime(&now));
+#else
+  snprintf(ctx_->key, sizeof(ctx_->key), "%s", "\"EtRobo\"");
+  snprintf(file, sizeof(file), "%s.log", "EtRobo");
 #endif
+  ctx_->fp = fopen(file, "w");
+  printf("%p\n", ctx_->fp);
   get_tim(&ctx_->start);
 }
 
 Diagnostics::~Diagnostics() {
-#ifdef MAKE_RASPIKE
-  if (ctx_->redis) {
-    redisFree(ctx_->redis);
+  if (ctx_->fp) {
+    fclose(ctx_->fp);
   }
   delete ctx_;
-#endif
 }
 
 void Diagnostics::Commit() {
   if (ctx_->invalidate) {
-#ifdef MAKE_RASPIKE
-    if (ctx_->redis) {
-      //void *r =
-      //    redisCommand(ctx_->redis, "XADD %s * AA %d BA %u BB %u BC %u BD %d "
-      //                 "CA %u CB %u DA %u EA %d EB %d FA %d FB %d",
-      //                 ctx_->key, ctx_->elapsed, ctx_->color.r, ctx_->color.g,
-      //                 ctx_->color.b, ctx_->color.brightness, ctx_->gyro.angle,
-      //                 ctx_->gyro.rate, ctx_->ultrasonic.distance,
-      //                 ctx_->left_motor.count, ctx_->left_motor.power,
-      //                 ctx_->right_motor.count, ctx_->right_motor.power);
-      //freeReplyObject(r);
-      printf("XADD %s * AA %d BA %u BB %u BC %u BD %d "
-                   "CA %u CB %u DA %u EA %d EB %d FA %d FB %d\n",
-                   ctx_->key, ctx_->elapsed, ctx_->color.r, ctx_->color.g,
-                   ctx_->color.b, ctx_->color.brightness, ctx_->gyro.angle,
-                   ctx_->gyro.rate, ctx_->ultrasonic.distance,
-                   ctx_->left_motor.count, ctx_->left_motor.power,
-                   ctx_->right_motor.count, ctx_->right_motor.power);
+    if (ctx_->fp) {
+      fprintf(ctx_->fp,
+              "XADD %s * AA %lu BA %u BB %u BC %u BD %d "
+              "CA %u CB %u DA %u EA %d EB %d FA %d FB %d\n",
+              ctx_->key, ctx_->elapsed, ctx_->color.r, ctx_->color.g,
+              ctx_->color.b, ctx_->color.brightness, ctx_->gyro.angle,
+              ctx_->gyro.rate, ctx_->ultrasonic.distance,
+              ctx_->left_motor.count, ctx_->left_motor.power,
+              ctx_->right_motor.count, ctx_->right_motor.power);
     }
-#endif
   }
   ctx_->invalidate = 0;
 }
@@ -103,11 +90,11 @@ void Diagnostics::Invalidate() {
 
 void Diagnostics::MonitorColorSensor(ColorSensorMode mode) {
   if (ev3_sensor_get_type(kColorSensorPort) == COLOR_SENSOR) {
-    if (mode == ColorSensorMode::kReflect) {
+    if (mode == kColorSensorModeReflect) {
       ctx_->color.brightness = ev3_color_sensor_get_reflect(kColorSensorPort);
       Invalidate();
-    } else if (mode == ColorSensorMode::kRgbRaw) {
-      rgb_raw_t color{};
+    } else if (mode == kColorSensorModeRgbRaw) {
+      rgb_raw_t color = {};
       ev3_color_sensor_get_rgb_raw(kColorSensorPort, &color);
       ctx_->color.r = color.r;
       ctx_->color.g = color.g;
