@@ -1,16 +1,20 @@
 mkfile_path := $(dir $(lastword $(MAKEFILE_LIST)))
 
 APPL_CXXOBJS += \
-	Walker.o \
-	LineWalker.o \
-	LineTracer.o \
-	Scenario.o \
-	ScenarioTracer.o \
+	ScenarioReader.o \
 	ScenarioWalker.o \
+	LineTracer.o \
+	Cockpit.o \
+	Walker.o \
+	WalkerParams.o \
 	LineMonitor.o \
+	LineWalker.o \
+	SampleWalker.o \
 	Starter.o \
-	SimpleTimer.o \
 	Diagnostics.o
+
+APPL_COBJS += \
+	mjson.o \
 
 SRCLANG := c++
 
@@ -21,8 +25,9 @@ include $(EV3RT_SDK_LIB_DIR)/libcpp-ev3/Makefile
 
 endif
 
-APPL_DIRS += $(mkfile_path)app $(mkfile_path)unit
+APPL_DIRS += $(mkfile_path)app $(mkfile_path)unit $(mkfile_path)mjson/src
 
 INCLUDES += \
+	-I$(mkfile_path)mjson/src \
 	-I$(mkfile_path)app \
 	-I$(mkfile_path)unit

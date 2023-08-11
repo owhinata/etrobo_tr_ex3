@@ -14,9 +14,11 @@
 #include "SonarSensor.h"
 #include "TouchSensor.h"
 #include "Motor.h"
-#include "Clock.h"
+//#include "Clock.h"
 
 #include "ScenarioWalker.h"
+#include "Cockpit.h"
+#include "SampleWalker.h"
 #include "Diagnostics.h"
 
 // デストラクタ問題の回避
@@ -29,7 +31,7 @@ using ev3api::GyroSensor;
 using ev3api::SonarSensor;
 using ev3api::TouchSensor;
 using ev3api::Motor;
-using ev3api::Clock;
+//using ev3api::Clock;
 
 // Device objects
 // オブジェクトを静的に確保する
@@ -39,15 +41,17 @@ SonarSensor gSonarSensor(PORT_3);
 TouchSensor gTouchSensor(PORT_1);
 Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
-Clock       gClock;
+//Clock       gClock;
 
 // オブジェクトの定義
-static Diagnostics     *gDiagnostics;
-static LineWalker      *gLineWalker;  // TODO: ->gWalkers
 static ScenarioWalker  *gScenarioWalker;
+static Cockpit         *gCockpit;
 static Starter         *gStarter;
 static Walkers          gWalkers;
+static LineWalker      *gLineWalker;  // TODO: ->gWalkers
+static SampleWalker    *gSampleWalker;
 static Monitors         gMonitors;
+static Diagnostics     *gDiagnostics;
 
 static int diag_exit_;
 
@@ -69,10 +73,14 @@ static void user_system_create() {
     };
     gMonitors = monitors;
 
+    gCockpit = new Cockpit(monitors.lineMonitor,
+                           gLeftWheel, gRightWheel);
+
     Walkers walkers = {
         .lineTracer = new LineTracer(monitors.lineMonitor,
                                      gLineWalker,
                                      gDiagnostics),
+        .sampleWalker = new SampleWalker(gCockpit),
     };
     gWalkers = walkers;
 
@@ -95,6 +103,7 @@ static void user_system_destroy() {
     delete gWalkers.lineTracer;
     delete gMonitors.lineMonitor;
     delete gLineWalker;
+    delete gSampleWalker;
     delete gDiagnostics;
 }
 

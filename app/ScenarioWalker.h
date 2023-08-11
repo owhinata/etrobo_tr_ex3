@@ -14,6 +14,7 @@
 
 #include "LineMonitor.h"
 #include "LineTracer.h"
+#include "SampleWalker.h"
 
 struct Monitors {
     LineMonitor* lineMonitor;
@@ -21,6 +22,7 @@ struct Monitors {
 
 struct Walkers {
     LineTracer* lineTracer;  // TODO: ->lineWalker
+    SampleWalker* sampleWalker;
 };
 
 class ScenarioWalker {
