@@ -12,7 +12,7 @@
 #include "Starter.h"
 #include "SimpleTimer.h"
 
-#include "LineTracer.h"
+#include "LineWalker.h"
 #include "ScenarioTracer.h"
 
 #include "Diagnostics.h"
@@ -20,12 +20,12 @@
 
 class RandomWalker {
 public:
-    RandomWalker(LineTracer* lineTracer,
+    RandomWalker(LineWalker* lineWalker,
                  ScenarioTracer* scenarioTracer,
                  const Starter* starter,
                  SimpleTimer* simpleTimer);
 
-    RandomWalker(LineTracer* lineTracer,
+    RandomWalker(LineWalker* lineWalker,
                  ScenarioTracer* scenarioTracer,
                  const Starter* starter,
                  SimpleTimer* simpleTimer,
@@ -44,7 +44,7 @@ private:
     static const int MIN_TIME;
     static const int MAX_TIME;
 
-    LineTracer* mLineTracer;
+    LineWalker* mLineWalker;
     ScenarioTracer* mScenarioTracer;
     const Starter* mStarter;
     SimpleTimer* mSimpleTimer;
