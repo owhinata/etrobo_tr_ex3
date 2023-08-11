@@ -45,8 +45,6 @@ void LineTracer::run() {
       diag_->MonitorGyroSensor();
     }
 
-    mLineMonitor->update();
-  
     // 反射光の強さを取得する
     int brightness = (int)mLineMonitor->getBrightness();
     mLineWalker->setCommand(brightness);
