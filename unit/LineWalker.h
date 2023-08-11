@@ -10,6 +10,7 @@
 #define EV3_UNIT_LINE_WALKER_H_
 
 #include "Motor.h"
+#include "Diagnostics.h"
 
 class LineWalker {
 public:
@@ -23,6 +24,10 @@ public:
     LineWalker(ev3api::Motor& leftWheel,
                     ev3api::Motor& rightWheel);
 
+    LineWalker(ev3api::Motor& leftWheel,
+                    ev3api::Motor& rightWheel,
+                    Diagnostics* diag);
+
     void init();
     void run(int16_t steeringAmount);
     void setCommand(int brightness);
@@ -33,6 +38,7 @@ private:
     ev3api::Motor& mRightWheel;
     int mBrightness;
     int mEdge;
+    Diagnostics* diag_;
 };
 
 #endif  // EV3_UNIT_LINE_WALKER_H_

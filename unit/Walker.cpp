@@ -4,9 +4,12 @@
  *  Implementation of the Class Walker
  *  Author: Kazuhiro.Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #include "Walker.h"
+
+#include "Diagnostics.h"
 
 // 定数宣言
 const int Walker::LOW    = 30;    // 低速
@@ -26,13 +29,28 @@ Walker::Walker(ev3api::Motor& leftWheel,
     : mLeftWheel(leftWheel),
       mRightWheel(rightWheel),
       mForward(LOW),
-      mTurn(RIGHT) {
+      mTurn(RIGHT),
+      diag_() {
+}
+
+Walker::Walker(ev3api::Motor& leftWheel,
+                                 ev3api::Motor& rightWheel,
+                                 Diagnostics* diag)
+    : mLeftWheel(leftWheel),
+      mRightWheel(rightWheel),
+      mForward(LOW),
+      mTurn(RIGHT),
+      diag_(diag) {
 }
 
 /**
  * 走行する
  */
 void Walker::run() {
+    if (diag_) {
+      diag_->MonitorMotors();
+    }
+
     // 左右モータに回転を指示する
     int rightPWM = 0;
     int leftPWM = 0;

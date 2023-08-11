@@ -9,6 +9,8 @@
 
 #include "LineTracer.h"
 
+#include "Diagnostics.h"
+
 /**
  * コンストラクタ
  * @param lineMonitor     ライン判定
@@ -18,7 +20,17 @@ LineTracer::LineTracer(const LineMonitor* lineMonitor,
                        LineWalker* lineWalker)
     : mLineMonitor(lineMonitor),
       mLineWalker(lineWalker),
-      mIsInitialized(false) {
+      mIsInitialized(false),
+      diag_() {
+}
+
+LineTracer::LineTracer(const LineMonitor* lineMonitor,
+                       LineWalker* walker,
+                       Diagnostics* diag)
+    : mLineMonitor(lineMonitor),
+      mLineWalker(walker),
+      mIsInitialized(false),
+      diag_(diag) {
 }
 
 /**
@@ -28,6 +40,10 @@ void LineTracer::run() {
     if (mIsInitialized == false) {
         mLineWalker->init();
         mIsInitialized = true;
+    }
+    if (diag_) {
+      diag_->MonitorColorSensor(kColorSensorModeRgbRaw);
+      diag_->MonitorGyroSensor();
     }
 
     // 反射光の強さを取得する

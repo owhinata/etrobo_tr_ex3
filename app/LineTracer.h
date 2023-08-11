@@ -12,11 +12,18 @@
 
 #include "LineMonitor.h"
 #include "LineWalker.h"
+#include "Diagnostics.h"
+
+class Diagnostics;
 
 class LineTracer {
 public:
     LineTracer(const LineMonitor* lineMonitor,
                LineWalker* lineWalker);
+
+    LineTracer(const LineMonitor* lineMonitor,
+               LineWalker* walker,
+               Diagnostics* diag);
 
     void run();
 
@@ -24,6 +31,10 @@ private:
     const LineMonitor* mLineMonitor;
     LineWalker* mLineWalker;
     bool mIsInitialized;
+
+    Diagnostics* diag_;
+
+    int calcDirection(bool isOnLine);
 };
 
 #endif  // EV3_APP_LINETRACER_H_
