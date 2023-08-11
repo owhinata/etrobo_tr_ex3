@@ -16,7 +16,7 @@
  * @param lineMonitor     ライン判定
  * @param LineWalker 走行
  */
-LineTracer::LineTracer(const LineMonitor* lineMonitor,
+LineTracer::LineTracer(LineMonitor* lineMonitor,
                        LineWalker* lineWalker)
     : mLineMonitor(lineMonitor),
       mLineWalker(lineWalker),
@@ -24,7 +24,7 @@ LineTracer::LineTracer(const LineMonitor* lineMonitor,
       diag_() {
 }
 
-LineTracer::LineTracer(const LineMonitor* lineMonitor,
+LineTracer::LineTracer(LineMonitor* lineMonitor,
                        LineWalker* walker,
                        Diagnostics* diag)
     : mLineMonitor(lineMonitor),
@@ -42,10 +42,11 @@ void LineTracer::run() {
         mIsInitialized = true;
     }
     if (diag_) {
-      diag_->MonitorColorSensor(kColorSensorModeRgbRaw);
       diag_->MonitorGyroSensor();
     }
 
+    mLineMonitor->update();
+  
     // 反射光の強さを取得する
     int brightness = (int)mLineMonitor->getBrightness();
     mLineWalker->setCommand(brightness);

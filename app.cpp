@@ -76,7 +76,7 @@ static void user_system_create() {
                                       gRightWheel,
                                   gDiagnostics);
     gStarter         = new Starter(gTouchSensor);
-    gLineMonitor     = new LineMonitor(gColorSensor);
+    gLineMonitor     = new LineMonitor(gColorSensor, gDiagnostics);
     gScenarioTimer   = new SimpleTimer(gClock);
     gWalkerTimer     = new SimpleTimer(gClock);
     gLineTracer      = new LineTracer(gLineMonitor, gLineWalker, gDiagnostics);

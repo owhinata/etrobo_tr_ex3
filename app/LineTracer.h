@@ -18,17 +18,17 @@ class Diagnostics;
 
 class LineTracer {
 public:
-    LineTracer(const LineMonitor* lineMonitor,
+    LineTracer(LineMonitor* lineMonitor,
                LineWalker* lineWalker);
 
-    LineTracer(const LineMonitor* lineMonitor,
+    LineTracer(LineMonitor* lineMonitor,
                LineWalker* walker,
                Diagnostics* diag);
 
     void run();
 
 private:
-    const LineMonitor* mLineMonitor;
+    LineMonitor* mLineMonitor;
     LineWalker* mLineWalker;
     bool mIsInitialized;
 

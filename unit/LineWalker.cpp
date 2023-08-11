@@ -12,7 +12,7 @@
 // 定数宣言
 const int LineWalker::RIGHT_EDGE  = 1;      // 左エッジ
 const int LineWalker::LEFT_EDGE   = -1;     // 右エッジ
-const int LineWalker::WHITE_BRIGHTNESS  = 160;      // カラーセンサの輝度設定用
+const int LineWalker::WHITE_BRIGHTNESS  = 140;      // カラーセンサの輝度設定用
 const int LineWalker::BLACK_BRIGHTNESS  = 10;      // カラーセンサの輝度設定用
 const float LineWalker::STEERING_COEF  = 0.3;      // ステアリング操舵量の係数
 const int LineWalker::BASE_SPEED  = 30;      // 走行標準スピード

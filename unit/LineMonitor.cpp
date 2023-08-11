@@ -9,48 +9,90 @@
 
 #include "LineMonitor.h"
 
-// 定数宣言
-const int8_t LineMonitor::INITIAL_THRESHOLD = 20;  // 黒色の光センサ値
+static const double SATURATED = 0.36;
+static const int COLORED_COUNT = 5;
 
-/**
- * コンストラクタ
- * @param colorSensor カラーセンサ
- */
-LineMonitor::LineMonitor(const ev3api::ColorSensor& colorSensor)
-    : mColorSensor(colorSensor),
-      mThreshold(INITIAL_THRESHOLD) {
+typedef struct {
+    double h, s, v;
+} hsv_raw_t;
+
+struct LineMonitor::Context {
+    rgb_raw_t rgb;
+    hsv_raw_t hsv;
+    int blueDetected;
+
+    Context() : rgb(), hsv(), blueDetected() {}
+};
+
+LineMonitor::LineMonitor(const ev3api::ColorSensor& colorSensor,
+                         Diagnostics* diag)
+    : mColorSensor(colorSensor), mDiag(diag),
+      mContext(new Context) {}
+
+LineMonitor::~LineMonitor() { delete mContext; }
+
+static uint16_t max(const rgb_raw_t& rgb) {
+    if (rgb.r >= rgb.g && rgb.r >= rgb.b) {
+        return rgb.r;
+    } else if (rgb.g >= rgb.b && rgb.g >= rgb.r) {
+        return rgb.g;
+    } else if (rgb.b >= rgb.r && rgb.b >= rgb.g) {
+        return rgb.b;
+    } else {
+        return 0;
+    }
 }
 
-/**
- * ライン上か否かを判定する
- * @retval true  ライン上
- * @retval false ライン外
- */
-//bool LineMonitor::isOnLine() const {
-//    // 光センサからの取得値を見て
-//    // 黒以上であれば「true」を、
-//    // そうでなければ「false」を返す
-//    if (mColorSensor.getBrightness() >= mThreshold) {
-//        return true;
-//    } else {
-//        return false;
-//    }
-//}
+static uint16_t min(const rgb_raw_t& rgb) {
+    if (rgb.r <= rgb.g && rgb.r <= rgb.b) {
+        return rgb.r;
+    } else if (rgb.g <= rgb.b && rgb.g <= rgb.r) {
+        return rgb.g;
+    } else if (rgb.b <= rgb.r && rgb.b <= rgb.g) {
+        return rgb.b;
+    } else {
+        return 0.0;
+    }
+}
 
-/**
- * ライン閾値を設定する
- * @param threshold ライン閾値
- */
-//void LineMonitor::setThreshold(int8_t threshold) {
-//    mThreshold = threshold;
-//}
+void LineMonitor::update() {
+    rgb_raw_t& rgb = mContext->rgb;
+    hsv_raw_t& hsv = mContext->hsv;
 
-/**
- * カラーセンサから反射光の強さを取得する
- * @return 反射光の強さ（0-100）
- */
-int LineMonitor::getBrightness() const {
-    rgb_raw_t rgb;
+    if (mDiag) {
+        mDiag->MonitorColorSensor(kColorSensorModeRgbRaw);
+    }
     mColorSensor.getRawColor(rgb);
-    return double(rgb.r + rgb.g + rgb.b) / 3.0;
+
+    const uint16_t a = max(rgb), b = min(rgb);
+
+    if (a == b) {
+        hsv.h = 0.0;
+    } else if (rgb.r == a) {
+        hsv.h = 60.0 * double(rgb.g - rgb.b) / double(a - b);
+    } else if (rgb.g == a) {
+        hsv.h = 60.0 * double(rgb.b - rgb.r) / double(a - b) + 120.0;
+    } else if (rgb.b == a) {
+        hsv.h = 240.0 * double(rgb.r - rgb.g) / double(a - b) + 240.0;
+    } else {
+        hsv.h = 0.0;
+    }
+
+    hsv.s = double(a - b) / double(a);
+    hsv.v = double(a);
+
+    if (hsv.s > SATURATED && hsv.h > 180 && hsv.h < 300) {
+        ++mContext->blueDetected;
+    } else {
+        mContext->blueDetected = 0;
+    }
+}
+
+bool LineMonitor::isOnBlueLine() const {
+    return mContext->blueDetected >= COLORED_COUNT;
+}
+
+double LineMonitor::getBrightness() const {
+    const rgb_raw_t& rgb = mContext->rgb;
+    return 0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b;
 }
