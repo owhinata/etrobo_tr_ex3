@@ -13,7 +13,7 @@
 #include "Starter.h"
 
 #include "LineMonitor.h"
-#include "LineTracer.h"
+#include "LineWalker.h"
 #include "SampleWalker.h"
 
 struct Monitors {
@@ -21,7 +21,7 @@ struct Monitors {
 };
 
 struct Walkers {
-    LineTracer* lineTracer;  // TODO: ->lineWalker
+    LineWalker* lineWalker;
     SampleWalker* sampleWalker;
 };
 

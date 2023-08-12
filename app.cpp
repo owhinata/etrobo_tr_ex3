@@ -48,7 +48,6 @@ static ScenarioWalker  *gScenarioWalker;
 static Cockpit         *gCockpit;
 static Starter         *gStarter;
 static Walkers          gWalkers;
-static LineWalker      *gLineWalker;  // TODO: ->gWalkers
 static SampleWalker    *gSampleWalker;
 static Monitors         gMonitors;
 static Diagnostics     *gDiagnostics;
@@ -64,9 +63,6 @@ static void user_system_create() {
 
     // オブジェクトの作成
     gDiagnostics     = new Diagnostics();
-    gLineWalker      = new LineWalker(gLeftWheel,
-                                      gRightWheel,
-                                      gDiagnostics);
 
     Monitors monitors = {
         .lineMonitor = new LineMonitor(gColorSensor, gDiagnostics),
@@ -77,8 +73,9 @@ static void user_system_create() {
                            gLeftWheel, gRightWheel);
 
     Walkers walkers = {
-        .lineTracer = new LineTracer(monitors.lineMonitor,
-                                     gLineWalker,
+        .lineWalker = new LineWalker(monitors.lineMonitor,
+                                     gLeftWheel,
+                                     gRightWheel,
                                      gDiagnostics),
         .sampleWalker = new SampleWalker(gCockpit),
     };
@@ -100,9 +97,8 @@ static void user_system_destroy() {
 
     delete gScenarioWalker;
     delete gStarter;
-    delete gWalkers.lineTracer;
+    delete gWalkers.lineWalker;
     delete gMonitors.lineMonitor;
-    delete gLineWalker;
     delete gSampleWalker;
     delete gDiagnostics;
 }

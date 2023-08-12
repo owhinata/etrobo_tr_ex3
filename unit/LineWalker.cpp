@@ -22,25 +22,46 @@ const int LineWalker::BASE_SPEED  = 30;      // 走行標準スピード
  * @param leftWheel  左モータ
  * @param rightWheel 右モータ
  */
-LineWalker::LineWalker(ev3api::Motor& leftWheel,
-                                 ev3api::Motor& rightWheel)
-    : mLeftWheel(leftWheel),
-      mRightWheel(rightWheel),
-      mEdge(LEFT_EDGE) {
-}
-
-LineWalker::LineWalker(ev3api::Motor& leftWheel,
-                                 ev3api::Motor& rightWheel,
-                                 Diagnostics* diag)
-    : mLeftWheel(leftWheel),
+LineWalker::LineWalker(const LineMonitor* lineMonitor,
+                        ev3api::Motor& leftWheel,
+                        ev3api::Motor& rightWheel)
+    : mLineMonitor(lineMonitor),
+      mLeftWheel(leftWheel),
       mRightWheel(rightWheel),
       mEdge(LEFT_EDGE),
+      mIsInitialized(false),
+      diag_() {
+}
+
+LineWalker::LineWalker(const LineMonitor* lineMonitor,
+                        ev3api::Motor& leftWheel,
+                        ev3api::Motor& rightWheel,
+                        Diagnostics* diag)
+    : mLineMonitor(lineMonitor),
+      mLeftWheel(leftWheel),
+      mRightWheel(rightWheel),
+      mEdge(LEFT_EDGE),
+      mIsInitialized(false),
       diag_(diag) {
 }
 /**
  * 走行する
  */
-void LineWalker::run(int16_t steeringAmount) {
+void LineWalker::run() {
+    if (mIsInitialized == false) {
+        this->init();
+        mIsInitialized = true;
+    }
+    if (diag_) {
+      diag_->MonitorColorSensor(kColorSensorModeRgbRaw);
+      diag_->MonitorGyroSensor();
+    }
+
+    // 反射光の強さを取得する
+    this->setCommand();
+
+    // 走行を行う
+    int16_t steeringAmount = this->steeringAmountCalculation();
     if (diag_) {
       diag_->MonitorMotors();
     }
@@ -68,8 +89,8 @@ void LineWalker::init() {
  * 反射光の強さを設定する
  * @param brightness 反射光の強さ
  */
-void LineWalker::setCommand(int brightness) {
-    mBrightness = brightness;
+void LineWalker::setCommand() {
+    mBrightness = (int)mLineMonitor->getBrightness();
 }
 
 /**

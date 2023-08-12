@@ -3,13 +3,12 @@ mkfile_path := $(dir $(lastword $(MAKEFILE_LIST)))
 APPL_CXXOBJS += \
 	ScenarioReader.o \
 	ScenarioWalker.o \
-	LineTracer.o \
-	Cockpit.o \
+	LineMonitor.o \
 	Walker.o \
 	WalkerParams.o \
-	LineMonitor.o \
-	LineWalker.o \
+	Cockpit.o \
 	SampleWalker.o \
+	LineWalker.o \
 	Starter.o \
 	Diagnostics.o
 

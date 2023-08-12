@@ -80,7 +80,7 @@ void ScenarioWalker::execWaitingForStart() {
  * ライントレース状態の処理
  */
 void ScenarioWalker::execLineTracing() {
-    mContext->walkers.lineTracer->run();
+    mContext->walkers.lineWalker->run();
 }
 
 void ScenarioWalker::execScenarioTracing() {
