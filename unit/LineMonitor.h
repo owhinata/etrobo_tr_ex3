@@ -7,25 +7,31 @@
  *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
-#ifndef EV3_UNIT_LINEMONITOR_H_
-#define EV3_UNIT_LINEMONITOR_H_
+#ifndef EV3_UNIT_LINE_MONITOR_H_
+#define EV3_UNIT_LINE_MONITOR_H_
 
 #include "ColorSensor.h"
+#include "Diagnostics.h"
 
-// 定義
 class LineMonitor {
 public:
-    explicit LineMonitor(const ev3api::ColorSensor& colorSensor);
+    explicit LineMonitor(const ev3api::ColorSensor& colorSensor,
+                         Diagnostics* diag);
 
-    //bool isOnLine() const;
-    //void setThreshold(int8_t threshold);
-    int getBrightness() const;
+    ~LineMonitor();
+
+    void update();
+
+    bool isOnBlueLine() const;
+
+    double getBrightness() const;
 
 private:
-    static const int8_t INITIAL_THRESHOLD;
-
     const ev3api::ColorSensor& mColorSensor;
-    int8_t mThreshold;
+    Diagnostics* mDiag;
+
+    struct Context;
+    Context* mContext;
 };
 
-#endif  // EV3_UNIT_LINEMONITOR_H_
+#endif  // EV3_UNIT_LINE_MONITOR_H_

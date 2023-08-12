@@ -1,0 +1,65 @@
+{
+  "no": 1,
+  "course": [
+    {
+      "name": "L-course",
+      "scenario": [
+        {
+          "class": "Starter"
+        },
+        {
+          "class": "LineWalker",
+          "params": {
+            "edge": 1.0,
+            "white": 140.0,
+            "black": 10.0,
+            "kp": 0.2,
+            "speed": 80
+          },
+          "runLength": 2.0
+        },
+        {
+          "class": "LineWalker",
+          "params": {
+            "edge": 1.0,
+            "white": 140.0,
+            "black": 10.0,
+            "kp": 0.3,
+            "speed": 30
+          },
+          "runLength": 0.3
+        }
+      ]
+    },
+    {
+      "name": "R-course",
+      "scenario": [
+        {
+          "class": "Starter"
+        },
+        {
+          "class": "LineWalker",
+          "params": {
+            "edge": -1.0,
+            "white": 140.0,
+            "black": 10.0,
+            "kp": 0.2,
+            "speed": 80
+          },
+          "terminate": 2.0
+        },
+        {
+          "class": "LineWalker",
+          "params": {
+            "edge": -1.0,
+            "white": 140.0,
+            "black": 10.0,
+            "kp": 0.3,
+            "speed": 30
+          },
+          "terminate": 0.3
+        }
+      ]
+    }
+  ]
+}

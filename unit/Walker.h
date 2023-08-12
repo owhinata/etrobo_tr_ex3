@@ -1,45 +1,37 @@
 /******************************************************************************
  *  Walker.h (for LEGO Mindstorms EV3)
- *  Created on: 2015/01/25
- *  Definition of the Class Walker
- *  Author: Kazuhiro.Kawachi
- *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
  *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #ifndef EV3_UNIT_WALKER_H_
 #define EV3_UNIT_WALKER_H_
 
-#include "Motor.h"
-
-class Diagnostics;
+class Cockpit;
+class WalkerParams;
 
 class Walker {
 public:
-    static const int LOW;
-    static const int NORMAL;
-    static const int HIGH;
-    
-    static const int RIGHT;
-    static const int LEFT;
+  Walker(Cockpit* cockpit);
 
-    Walker(ev3api::Motor& leftWheel,
-                    ev3api::Motor& rightWheel);
+  virtual ~Walker();
 
-    Walker(ev3api::Motor& leftWheel,
-                    ev3api::Motor& rightWheel,
-                    Diagnostics* diag);
-    void init();
-    void run();
-    void setCommand(int forward, int turn);
+  virtual void init();
+
+  virtual void reset();
+
+  virtual void run() = 0;
+
+  virtual const char* getClassName() const = 0;
+
+  void setParams(const WalkerParams& params);
+
+protected:
+  bool getWalkerParam(const char* key, int keyLength, double* value);
+  void setDriveParam(int leftPWM, int rightPWM);
+  double getBrightness() const;
 
 private:
-    ev3api::Motor& mLeftWheel;
-    ev3api::Motor& mRightWheel;
-    int mForward;
-    int mTurn;
-
-    Diagnostics* diag_;
+  void* mContext;
 };
 
 #endif  // EV3_UNIT_WALKER_H_
