@@ -18,16 +18,16 @@ const int RandomWalker::MAX_TIME = 15000 * 1000;   // 切り替え時間の最�
 
 /**
  * コンストラクタ
- * @param lineTracer      ライントレーサ
+ * @param lineWalker      ライントレーサ
  * @param scenarioTracer  シナリオトレーサ
  * @param starter         スタータ  
  * @param simpleTimer     タイマ
  */
-RandomWalker::RandomWalker(LineTracer* lineTracer,
+RandomWalker::RandomWalker(LineWalker* lineWalker,
                            ScenarioTracer* scenarioTracer,
                            const Starter* starter,
                            SimpleTimer* simpleTimer)
-    : mLineTracer(lineTracer),
+    : mLineWalker(lineWalker),
       mScenarioTracer(scenarioTracer),
       mStarter(starter),
       mSimpleTimer(simpleTimer),
@@ -39,12 +39,12 @@ RandomWalker::RandomWalker(LineTracer* lineTracer,
     delete clock;
 }
 
-RandomWalker::RandomWalker(LineTracer* lineTracer,
+RandomWalker::RandomWalker(LineWalker* lineWalker,
                            ScenarioTracer* scenarioTracer,
                            const Starter* starter,
                            SimpleTimer* simpleTimer,
                            Diagnostics* diag)
-    : mLineTracer(lineTracer),
+    : mLineWalker(lineWalker),
       mScenarioTracer(scenarioTracer),
       mStarter(starter),
       mSimpleTimer(simpleTimer),
@@ -120,7 +120,7 @@ void RandomWalker::execWaitingForStart() {
  * ライントレース状態の処理
  */
 void RandomWalker::execLineTracing() {
-    mLineTracer->run();
+    mLineWalker->run();
 
     // if (mSimpleTimer->isTimedOut()) {
     //     mSimpleTimer->stop();

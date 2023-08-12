@@ -45,7 +45,7 @@ static LineMonitor     *gLineMonitor;
 static Starter         *gStarter;
 static SimpleTimer     *gScenarioTimer;
 static SimpleTimer     *gWalkerTimer;
-static LineTracer      *gLineTracer;
+//static LineTracer      *gLineTracer;
 static Scenario        *gScenario;
 static ScenarioTracer  *gScenarioTracer;
 static RandomWalker    *gRandomWalker;
@@ -72,19 +72,20 @@ static void user_system_create() {
     gWalker          = new Walker(gLeftWheel,
                                   gRightWheel,
                                   gDiagnostics);
-    gLineWalker      = new LineWalker(gLeftWheel,
-                                      gRightWheel,
-                                  gDiagnostics);
-    gStarter         = new Starter(gTouchSensor);
     gLineMonitor     = new LineMonitor(gColorSensor);
+    gLineWalker      = new LineWalker(gLineMonitor,
+                                      gLeftWheel,
+                                      gRightWheel,
+                                      gDiagnostics);
+    gStarter         = new Starter(gTouchSensor);
     gScenarioTimer   = new SimpleTimer(gClock);
     gWalkerTimer     = new SimpleTimer(gClock);
-    gLineTracer      = new LineTracer(gLineMonitor, gLineWalker, gDiagnostics);
+    //gLineTracer      = new LineTracer(gLineMonitor, gLineWalker, gDiagnostics);
     gScenario        = new Scenario(0);
     gScenarioTracer  = new ScenarioTracer(gWalker,
                                           gScenario,
                                           gScenarioTimer);
-    gRandomWalker    = new RandomWalker(gLineTracer,
+    gRandomWalker    = new RandomWalker(gLineWalker,
                                         gScenarioTracer,
                                         gStarter,
                                         gWalkerTimer,
@@ -108,7 +109,7 @@ static void user_system_destroy() {
     delete gRandomWalker;
     delete gScenarioTracer;
     delete gScenario;
-    delete gLineTracer;
+    //delete gLineTracer;
     delete gWalkerTimer;
     delete gScenarioTimer;
     delete gLineMonitor;
