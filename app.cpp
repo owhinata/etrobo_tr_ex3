@@ -18,7 +18,6 @@
 
 #include "ScenarioWalker.h"
 #include "Cockpit.h"
-#include "SampleWalker.h"
 #include "Diagnostics.h"
 
 // デストラクタ問題の回避
@@ -43,16 +42,18 @@ Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
 //Clock       gClock;
 
+static int diag_exit_;
+
 // オブジェクトの定義
-static ScenarioWalker  *gScenarioWalker;
-static Cockpit         *gCockpit;
-static Starter         *gStarter;
-static Walkers          gWalkers;
-static SampleWalker    *gSampleWalker;
-static Monitors         gMonitors;
 static Diagnostics     *gDiagnostics;
 
-static int diag_exit_;
+static Monitors         gMonitors;
+static Cockpit         *gCockpit;
+
+static Walkers          gWalkers;
+static Starter         *gStarter;
+
+static ScenarioWalker  *gScenarioWalker;
 
 /**
  * EV3システム生成
@@ -98,8 +99,9 @@ static void user_system_destroy() {
     delete gScenarioWalker;
     delete gStarter;
     delete gWalkers.lineWalker;
+    delete gWalkers.sampleWalker;
+    delete gCockpit;
     delete gMonitors.lineMonitor;
-    delete gSampleWalker;
     delete gDiagnostics;
 }
 
