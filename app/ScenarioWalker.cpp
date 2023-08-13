@@ -22,28 +22,60 @@ enum State {
 };
 
 struct ScenarioWalker::Context {
-    ScenarioReader scenario;
-    Monitors monitors;
     Walkers walkers;
     Starter* starter;
     State state;
 
-    Context(const Monitors& _monitors,
-            const Walkers& _walkers,
-            Starter* _starter)
-        : scenario(), monitors(_monitors), walkers(_walkers), starter(_starter),
+    Context(const Walkers& _walkers, Starter* _starter)
+        : walkers(_walkers), starter(_starter),
           state(UNDEFINED) {}
 };
 
-ScenarioWalker::ScenarioWalker(const Monitors& monitors,
-                               const Walkers& walkers,
-                               Starter* starter)
-    : mContext(new Context(monitors, walkers, starter)) {}
+class MonitorsImpl {
+public:
+    MonitorsImpl(Monitor* monitors[], int monitorsNum, ScenarioReader* scenario)
+        : mMonitorsInitialized(), mScenario(scenario),
+          mMonitorsNum(monitorsNum),
+          mMonitors((Monitor**)calloc(monitorsNum, sizeof(Monitor*))) {
+        for (int i = 0; i < mMonitorsNum; ++i) {
+            mMonitors[i] = monitors[i];
+        }
+    }
+
+    ~MonitorsImpl() { free(mMonitors); }
+
+    void update() {
+        for (int i = 0; i < mMonitorsNum; ++i) {
+            if (!mMonitorsInitialized) {
+                printf("--------\n");
+                const char* klass = mMonitors[i]->getClassName();
+                const ScenarioParams& params = mScenario->getMonitorParams(klass);
+                mMonitors[i]->init(params);
+                ++mMonitorsInitialized;
+            }
+            mMonitors[i]->update();
+        }
+    }
+
+private:
+    int mMonitorsInitialized;
+    ScenarioReader *mScenario;
+    int mMonitorsNum;
+    Monitor** mMonitors;
+};
+
+ScenarioWalker::ScenarioWalker(
+        ScenarioReader* scenario,
+        Monitor* monitors[], int monitorsNum,
+        const Walkers& walkers,
+        Starter* starter)
+    : mContext(new Context(walkers, starter)), mScenario(scenario),
+      mMonitors(new MonitorsImpl(monitors, monitorsNum, mScenario)) {}
 
 ScenarioWalker::~ScenarioWalker() { delete mContext; }
 
 void ScenarioWalker::run() {
-    mContext->monitors.lineMonitor->update();
+    mMonitors->update();
 
     switch (mContext->state) {
     case UNDEFINED:

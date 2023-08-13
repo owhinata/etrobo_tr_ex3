@@ -5,12 +5,12 @@
 
 #include "Walker.h"
 
-#include "WalkerParams.h"
+#include "ScenarioParams.h"
 #include "Cockpit.h"
 
 struct Context {
   Cockpit* cockpit;
-  WalkerParams params;
+  ScenarioParams params;
   Context(Cockpit* _cockpit) : cockpit(_cockpit) {}
 };
 
@@ -36,5 +36,7 @@ double Walker::getBrightness() const {
 
 bool Walker::getWalkerParam(const char* key, int keyLength, double* value) {
   Context* ctx = (Context*)mContext;
-  return ctx->params.get(key, keyLength, value);
+  char buf[32];
+  snprintf(buf, sizeof(buf), "%.*s", keyLength, key);
+  return ctx->params.get(buf, value);
 }

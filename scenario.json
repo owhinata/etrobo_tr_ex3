@@ -61,5 +61,15 @@
         }
       ]
     }
+  ],
+
+  "monitors": [
+    {
+      "class": "LineMonitor",
+      "params": {
+        "saturated": 0.36,
+        "colored_count": 5
+      }
+    }
   ]
 }
