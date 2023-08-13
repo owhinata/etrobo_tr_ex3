@@ -10,24 +10,24 @@
 #ifndef EV3_APP_SCENARIO_WALKER_H_
 #define EV3_APP_SCENARIO_WALKER_H_
 
+#include "ScenarioReader.h"
+#include "Monitor.h"
 #include "Starter.h"
 
-#include "LineMonitor.h"
 #include "LineWalker.h"
 #include "SampleWalker.h"
-
-struct Monitors {
-    LineMonitor* lineMonitor;
-};
 
 struct Walkers {
     LineWalker* lineWalker;
     SampleWalker* sampleWalker;
 };
 
+class MonitorsImpl;
+
 class ScenarioWalker {
 public:
-    ScenarioWalker(const Monitors& monitors,
+    ScenarioWalker(ScenarioReader* scenario,
+                   Monitor* monitors[], int monitorsNum,
                    const Walkers& walkers,
                    Starter* starter);
 
@@ -43,6 +43,9 @@ private:
     void execWaitingForStart();
     void execLineTracing();
     void execScenarioTracing();
+
+    ScenarioReader* mScenario;
+    MonitorsImpl* mMonitors;
 };
 
 #endif  // EV3_APP_SCENARIO_WALKER_H_

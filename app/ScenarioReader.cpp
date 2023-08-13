@@ -11,18 +11,19 @@
 
 #include "mjson.h"
 
-//struct WalkerParam {
-//  char key[32];
-//  double value;
-//};
-
 struct ScenarioReader::Context {
   int scenesNum;
   Scene* scenes;
-  Context() : scenesNum(), scenes() {}
+  int monitorsNum;
+  struct Monitors {
+    char klass[32];
+    ScenarioParams params;
+  } *monitors;
+  const ScenarioParams defaultParams;
+  Context() : scenesNum(), scenes(), monitorsNum(), monitors() {}
 };
 
-int ScenarioReader::get_num_params(const char* params, int len) {
+static int get_num_params(const char* params, int len) {
   int koff, klen, voff, vlen, vtype, off, num = 0;
   for (off = 0; (off = mjson_next(params, len, off, &koff, &klen,
                                   &voff, &vlen, &vtype)) != 0;) {
@@ -34,20 +35,19 @@ int ScenarioReader::get_num_params(const char* params, int len) {
   return num;
 }
 
-WalkerParams ScenarioReader::parse_to_params(const char* params, int len, int num) {
-  WalkerParams result;
+static void parse_to_params(const char* json, int len, ScenarioParams& params) {
   int koff, klen, voff, vlen, vtype, off;
-  result.reserve(num);
-  for (off = 0; (off = mjson_next(params, len, off, &koff, &klen,
+  for (off = 0; (off = mjson_next(json, len, off, &koff, &klen,
                                   &voff, &vlen, &vtype)) != 0;) {
     if (vtype == MJSON_TOK_NUMBER) {
-      //printf("  key: %.*s, value: %.*s\n", klen, params + koff, vlen, params + voff);
-      char value[32];
-      snprintf(value, sizeof(value), "%.*s", vlen, params + voff);
-      result.add(params + koff, klen, atof(value));
+      // printf("  key: %.*s, value: %.*s\n",
+      //        klen, json + koff, vlen, json + voff);
+      char key[32], value[32];
+      snprintf(key, sizeof(key), "%.*s", klen, json + koff);
+      snprintf(value, sizeof(value), "%.*s", vlen, json + voff);
+      params.add(key, atof(value));
     }
   }
-  return result;
 }
 
 int ScenarioReader::get_num_scene(const char* scenario) {
@@ -75,11 +75,8 @@ Scene* ScenarioReader::parse_to_scenes(const char* scenario, int num) {
           mjson_get_string(s, n, "$.class", p[i].klass, sizeof(p[i].klass)) >= 0) {
         printf("class: %s\n", p[i].klass);
         if (mjson_find(s, n, "$.params", &s1, &n1) == MJSON_TOK_OBJECT) {
-          int num = get_num_params(s1, n1);
-          if (num > 0) {
-            p[i].params = parse_to_params(s1, n1, num);
-          }
-          // printf("  num_params: %d\n", num);
+          p[i].params.reserve(get_num_params(s1, n1));
+          parse_to_params(s1, n1, p[i].params);
         }
         double length;
         if (mjson_get_number(s, n, "$.runLength", &length)) {
@@ -136,6 +133,54 @@ static char* parse_to_scenario(const char* setting) {
   return 0;
 }
 
+static int get_array_num(const char* json, int json_len, const char* key) {
+  const char *s = 0, *s1 = 0; int n = 0, n1 = 0, i = 0;
+  char elem[16];
+  if (mjson_find(json, json_len, key, &s, &n) == MJSON_TOK_ARRAY) {
+    for (i = 0;; ++i) {
+      snprintf(elem, sizeof(elem), "$[%d]", i);
+      if (mjson_find(s, n, elem, &s1, &n1) <= 0) {
+        return i;
+      }
+    }
+  }
+  return 0;
+}
+
+void ScenarioReader::parse_to_monitors(const char* setting, Context* ctx) {
+  ctx->monitorsNum = get_array_num(setting, strlen(setting), "$.monitors");
+  // printf("monitorsNum=%d\n", ctx->monitorsNum);
+  if (ctx->monitorsNum <= 0) return;
+
+  ctx->monitors =
+      (Context::Monitors*)calloc(ctx->monitorsNum, sizeof(*ctx->monitors));
+  if (ctx->monitors == 0) {
+    printf("Error: Fail to parse_to_monitors\n");
+    ctx->monitorsNum = 0;
+    return;
+  }
+
+  for (int i = 0; i < ctx->monitorsNum; ++i) {
+    char elem[24];
+    const char *s = 0, *s1 = 0; int n = 0, n1 = 0;
+    snprintf(elem, sizeof(elem), "$.monitors[%d]", i);
+    if (mjson_find(setting, strlen(setting), elem, &s, &n)
+        != MJSON_TOK_OBJECT) {
+      printf("Error: %s is not json object\n", elem);
+    } else if (mjson_get_string(s, n, "$.class",
+                                ctx->monitors[i].klass,
+                                sizeof(ctx->monitors[i].klass)) <= 0) {
+      printf("Error: %s is not include class element\n", elem);
+    } else {
+      printf("class %s\n", ctx->monitors[i].klass);
+      if (mjson_find(s, n, "$.params", &s1, &n1) == MJSON_TOK_OBJECT) {
+        ctx->monitors[i].params.reserve(get_num_params(s1, n1));
+        parse_to_params(s1, n1, ctx->monitors[i].params);
+      }
+    }
+  }
+}
+
 ScenarioReader::ScenarioReader() : mContext(new Context) {
   if (char* setting = read_setting()) {
     if (char* scenario = parse_to_scenario(setting)) {
@@ -148,6 +193,7 @@ ScenarioReader::ScenarioReader() : mContext(new Context) {
       }
       free(scenario);
     }
+    parse_to_monitors(setting, mContext);
     free(setting);
   }
 }
@@ -156,4 +202,13 @@ ScenarioReader::~ScenarioReader() {
   // mContext->scens[i].params
   free(mContext->scenes);
   delete mContext;
+}
+
+const ScenarioParams& ScenarioReader::getMonitorParams(const char* name) const {
+  for (int i = 0; i < mContext->monitorsNum; ++i) {
+    if (strcmp(mContext->monitors[i].klass, name) == 0) {
+      return mContext->monitors[i].params;
+    }
+  }
+  return mContext->defaultParams;
 }

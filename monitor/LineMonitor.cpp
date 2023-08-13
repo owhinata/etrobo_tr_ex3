@@ -20,8 +20,13 @@ struct LineMonitor::Context {
     rgb_raw_t rgb;
     hsv_raw_t hsv;
     int blueDetected;
+    double saturated;
+    int colored_count;
 
-    Context() : rgb(), hsv(), blueDetected() {}
+    Context()
+        : rgb(), hsv(), blueDetected(),
+          saturated(SATURATED),
+          colored_count(COLORED_COUNT) {}
 };
 
 LineMonitor::LineMonitor(const ev3api::ColorSensor& colorSensor,
@@ -30,6 +35,18 @@ LineMonitor::LineMonitor(const ev3api::ColorSensor& colorSensor,
       mContext(new Context) {}
 
 LineMonitor::~LineMonitor() { delete mContext; }
+
+const char* LineMonitor::getClassName() const { return "LineMonitor"; }
+
+#define GET(a, b, c) params.get(a, &val) ? b(val) : c
+
+void LineMonitor::init(const ScenarioParams& params) {
+    double val;
+    mContext->saturated = GET("saturated", double, SATURATED);
+    mContext->colored_count = GET("colored_count", int, COLORED_COUNT);
+    printf("LineMonitor:\n  saturated:     %f\n  colored_count: %d\n",
+           mContext->saturated, mContext->colored_count);
+}
 
 static uint16_t max(const rgb_raw_t& rgb) {
     if (rgb.r >= rgb.g && rgb.r >= rgb.b) {

@@ -46,8 +46,9 @@ static int diag_exit_;
 
 // オブジェクトの定義
 static Diagnostics     *gDiagnostics;
+static ScenarioReader  *gScenarioReader;
 
-static Monitors         gMonitors;
+static LineMonitor     *gLineMonitor;
 static Cockpit         *gCockpit;
 
 static Walkers          gWalkers;
@@ -64,17 +65,19 @@ static void user_system_create() {
 
     // オブジェクトの作成
     gDiagnostics     = new Diagnostics();
+    gScenarioReader  = new ScenarioReader();
 
-    Monitors monitors = {
-        .lineMonitor = new LineMonitor(gColorSensor, gDiagnostics),
+    gLineMonitor = new LineMonitor(gColorSensor, gDiagnostics);
+
+    Monitor* monitors[] = {
+        gLineMonitor,
     };
-    gMonitors = monitors;
 
-    gCockpit = new Cockpit(monitors.lineMonitor,
+    gCockpit = new Cockpit(gLineMonitor,
                            gLeftWheel, gRightWheel);
 
     Walkers walkers = {
-        .lineWalker = new LineWalker(monitors.lineMonitor,
+        .lineWalker = new LineWalker(gLineMonitor,
                                      gLeftWheel,
                                      gRightWheel,
                                      gDiagnostics),
@@ -83,7 +86,10 @@ static void user_system_create() {
     gWalkers = walkers;
 
     gStarter = new Starter(gTouchSensor);
-    gScenarioWalker = new ScenarioWalker(monitors, walkers, gStarter);
+
+    gScenarioWalker = new ScenarioWalker(gScenarioReader,
+            monitors, sizeof(monitors) / sizeof(monitors[0]),
+            walkers, gStarter);
 
     // 初期化完了通知
     ev3_led_set_color(LED_ORANGE);
@@ -101,7 +107,8 @@ static void user_system_destroy() {
     delete gWalkers.lineWalker;
     delete gWalkers.sampleWalker;
     delete gCockpit;
-    delete gMonitors.lineMonitor;
+    delete gLineMonitor;
+    delete gScenarioReader;
     delete gDiagnostics;
 }
 

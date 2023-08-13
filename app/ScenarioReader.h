@@ -6,11 +6,11 @@
 #ifndef EV3_UNIT_SCENARIO_READER_H_
 #define EV3_UNIT_SCENARIO_READER_H_
 
-#include "WalkerParams.h"
+#include "ScenarioParams.h"
 
 struct Scene {
   char klass[32];
-  WalkerParams params;
+  ScenarioParams params;
   double runLength;
 };
 
@@ -19,15 +19,17 @@ public:
   ScenarioReader();
   ~ScenarioReader();
 
+  const ScenarioParams& getMonitorParams(const char* name) const;
+
 private:
   struct Context;
   Context* mContext;
 
   // TODO: Refactoring
-  int get_num_params(const char* params, int len);
-  WalkerParams parse_to_params(const char* params, int len, int num);
-  int get_num_scene(const char* scenario);
-  Scene* parse_to_scenes(const char* scenario, int num);
+  static int get_num_scene(const char* scenario);
+  static Scene* parse_to_scenes(const char* scenario, int num);
+
+  static void parse_to_monitors(const char* setting, Context* ctx);
 
   ScenarioReader(const ScenarioReader&);
   ScenarioReader& operator=(const ScenarioReader&);
