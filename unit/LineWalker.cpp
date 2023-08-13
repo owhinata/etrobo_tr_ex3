@@ -12,9 +12,9 @@
 // 定数宣言
 const int LineWalker::RIGHT_EDGE  = 1;      // 左エッジ
 const int LineWalker::LEFT_EDGE   = -1;     // 右エッジ
-const int LineWalker::WHITE_BRIGHTNESS  = 140;      // カラーセンサの輝度設定用
-const int LineWalker::BLACK_BRIGHTNESS  = 10;      // カラーセンサの輝度設定用
-const float LineWalker::STEERING_COEF  = 0.3;      // ステアリング操舵量の係数
+const int LineWalker::WHITE_BRIGHTNESS  = 100;      // カラーセンサの輝度設定用
+const int LineWalker::BLACK_BRIGHTNESS  = 0;      // カラーセンサの輝度設定用
+const float LineWalker::STEERING_COEF  = 0.2;      // ステアリング操舵量の係数
 const int LineWalker::BASE_SPEED  = 30;      // 走行標準スピード
 
 /**
@@ -22,10 +22,12 @@ const int LineWalker::BASE_SPEED  = 30;      // 走行標準スピード
  * @param leftWheel  左モータ
  * @param rightWheel 右モータ
  */
-LineWalker::LineWalker(const LineMonitor* lineMonitor,
+LineWalker::LineWalker(Driver* driver,
+                        const LineMonitor* lineMonitor,
                         ev3api::Motor& leftWheel,
                         ev3api::Motor& rightWheel)
-    : mLineMonitor(lineMonitor),
+    : Walker(driver),
+      mLineMonitor(lineMonitor),
       mLeftWheel(leftWheel),
       mRightWheel(rightWheel),
       mEdge(LEFT_EDGE),
@@ -33,11 +35,13 @@ LineWalker::LineWalker(const LineMonitor* lineMonitor,
       diag_() {
 }
 
-LineWalker::LineWalker(const LineMonitor* lineMonitor,
+LineWalker::LineWalker(Driver* driver,
+                        const LineMonitor* lineMonitor,
                         ev3api::Motor& leftWheel,
                         ev3api::Motor& rightWheel,
                         Diagnostics* diag)
-    : mLineMonitor(lineMonitor),
+    : Walker(driver),
+      mLineMonitor(lineMonitor),
       mLeftWheel(leftWheel),
       mRightWheel(rightWheel),
       mEdge(LEFT_EDGE),
@@ -49,7 +53,7 @@ LineWalker::LineWalker(const LineMonitor* lineMonitor,
  */
 void LineWalker::run() {
     if (mIsInitialized == false) {
-        this->init();
+        //this->init();
         mIsInitialized = true;
     }
     if (diag_) {
@@ -115,3 +119,5 @@ int16_t LineWalker::steeringAmountCalculation() {
 
     return steeringAmount;
 }
+
+const char* LineWalker::getClassName() const { return "LineWalker"; }

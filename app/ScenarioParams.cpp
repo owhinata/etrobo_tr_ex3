@@ -14,7 +14,9 @@ struct ScenarioParam {
   double value;
 };
 
-ScenarioParams::ScenarioParams() : mParams(), mParamsNum() {}
+ScenarioParams::ScenarioParams() : mParams(), mParamsNum(), mParamsCapacity() {}
+
+ScenarioParams::~ScenarioParams() { free(mParams); }
 
 void ScenarioParams::reserve(int num) {
   if (void* p = calloc(num, sizeof(ScenarioParam))) {
@@ -33,7 +35,7 @@ void ScenarioParams::reserve(int num) {
 }
 
 void ScenarioParams::add(const char* key, double value) {
-  printf(" * key: %s val: %f\n", key, value);
+  printf(" * key: \"%s\" val: %f\n", key, value);
   if (mParamsNum < mParamsCapacity) {
     ScenarioParam* p = (ScenarioParam*)mParams;
     memset(p[mParamsNum].key, 0, sizeof(p[mParamsNum].key));
@@ -43,6 +45,12 @@ void ScenarioParams::add(const char* key, double value) {
 }
 
 bool ScenarioParams::get(const char* key, double* value) const {
+  // printf("ScenarioParams::get(\"%s\")> num=%d\n", key, mParamsNum);
+  // for (int i = 0; i < mParamsNum; ++i) {
+  //   ScenarioParam* p = (ScenarioParam*)mParams;
+  //   printf("ScenarioParams::get(\"%s\")> * key: \"%s\" val: %f\n",
+  //          key, p[i].key, p[i].value);
+  // }
   for (int i = 0; i < mParamsNum; ++i) {
     ScenarioParam* p = (ScenarioParam*)mParams;
     if (strcmp(p[i].key, key) == 0) {

@@ -9,24 +9,10 @@
 
 #include "LineMonitor.h"
 
-static const double SATURATED = 0.36;
-static const int COLORED_COUNT = 5;
-
-typedef struct {
-    double h, s, v;
-} hsv_raw_t;
-
 struct LineMonitor::Context {
     rgb_raw_t rgb;
     hsv_raw_t hsv;
-    int blueDetected;
-    double saturated;
-    int colored_count;
-
-    Context()
-        : rgb(), hsv(), blueDetected(),
-          saturated(SATURATED),
-          colored_count(COLORED_COUNT) {}
+    Context() : rgb(), hsv() {}
 };
 
 LineMonitor::LineMonitor(const ev3api::ColorSensor& colorSensor,
@@ -37,16 +23,6 @@ LineMonitor::LineMonitor(const ev3api::ColorSensor& colorSensor,
 LineMonitor::~LineMonitor() { delete mContext; }
 
 const char* LineMonitor::getClassName() const { return "LineMonitor"; }
-
-#define GET(a, b, c) params.get(a, &val) ? b(val) : c
-
-void LineMonitor::init(const ScenarioParams& params) {
-    double val;
-    mContext->saturated = GET("saturated", double, SATURATED);
-    mContext->colored_count = GET("colored_count", int, COLORED_COUNT);
-    printf("LineMonitor:\n  saturated:     %f\n  colored_count: %d\n",
-           mContext->saturated, mContext->colored_count);
-}
 
 static uint16_t max(const rgb_raw_t& rgb) {
     if (rgb.r >= rgb.g && rgb.r >= rgb.b) {
@@ -97,19 +73,13 @@ void LineMonitor::update() {
 
     hsv.s = double(a - b) / double(a);
     hsv.v = double(a);
-
-    if (hsv.s > SATURATED && hsv.h > 180 && hsv.h < 300) {
-        ++mContext->blueDetected;
-    } else {
-        mContext->blueDetected = 0;
-    }
-}
-
-bool LineMonitor::isOnBlueLine() const {
-    return mContext->blueDetected >= COLORED_COUNT;
 }
 
 double LineMonitor::getBrightness() const {
     const rgb_raw_t& rgb = mContext->rgb;
     return 0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b;
+}
+
+hsv_raw_t LineMonitor::getHsvColor() const {
+    return mContext->hsv;
 }

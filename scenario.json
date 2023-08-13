@@ -1,11 +1,14 @@
 {
-  "no": 1,
-  "course": [
+  "no": 0,
+  "courses": [
     {
       "name": "L-course",
-      "scenario": [
+      "scenes": [
         {
-          "class": "Starter"
+          "class": "StayInPlace",
+          "detector": {
+            "class": "Starter"
+          }
         },
         {
           "class": "LineWalker",
@@ -14,28 +17,30 @@
             "white": 140.0,
             "black": 10.0,
             "kp": 0.2,
-            "speed": 80
-          },
-          "runLength": 2.0
-        },
-        {
-          "class": "LineWalker",
-          "params": {
-            "edge": 1.0,
-            "white": 140.0,
-            "black": 10.0,
-            "kp": 0.3,
             "speed": 30
           },
-          "runLength": 0.3
+          "detector": {
+            "class": "ColorDetector",
+            "params": {
+              "hue": -20.0,
+              "saturation": 0.36,
+              "count": 5
+            }
+          }
+        },
+        {
+          "class": "StayInPlace"
         }
       ]
     },
     {
       "name": "R-course",
-      "scenario": [
+      "scenes": [
         {
-          "class": "Starter"
+          "class": "StayInPlace",
+          "detector": {
+            "class": "Starter"
+          }
         },
         {
           "class": "LineWalker",
@@ -44,20 +49,19 @@
             "white": 140.0,
             "black": 10.0,
             "kp": 0.2,
-            "speed": 80
-          },
-          "terminate": 2.0
-        },
-        {
-          "class": "LineWalker",
-          "params": {
-            "edge": -1.0,
-            "white": 140.0,
-            "black": 10.0,
-            "kp": 0.3,
             "speed": 30
           },
-          "terminate": 0.3
+          "detector": {
+            "class": "ColorDetector",
+            "params": {
+              "hue": -20.0,
+              "saturation": 0.36,
+              "count": 5
+            }
+          }
+        },
+        {
+          "class": "StayInPlace"
         }
       ]
     }

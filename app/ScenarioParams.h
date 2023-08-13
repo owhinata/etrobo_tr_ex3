@@ -6,11 +6,10 @@
 #ifndef EV3_APP_SCENARIO_PARAMS_H_
 #define EV3_APP_SCENARIO_PARAMS_H_
 
-//struct ScenarioParam;
-
 class ScenarioParams {
 public:
   ScenarioParams();
+  ~ScenarioParams();
 
   bool get(const char* key, double* value) const;
 
@@ -18,7 +17,6 @@ public:
   void add(const char* key, double value);
 
 private:
-  //ScenarioParam* mParams;
   void* mParams;
   int mParamsNum;
   int mParamsCapacity;
@@ -27,4 +25,4 @@ private:
   ScenarioParams& operator=(const ScenarioParams&);
 };
 
-#endif  // EV3_UNIT_SCENARIO_PARAMS_H_
+#endif  // EV3_APP_SCENARIO_PARAMS_H_

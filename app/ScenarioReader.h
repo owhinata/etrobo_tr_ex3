@@ -3,36 +3,36 @@
  *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
-#ifndef EV3_UNIT_SCENARIO_READER_H_
-#define EV3_UNIT_SCENARIO_READER_H_
+#ifndef EV3_APP_SCENARIO_READER_H_
+#define EV3_APP_SCENARIO_READER_H_
 
 #include "ScenarioParams.h"
 
-struct Scene {
-  char klass[32];
-  ScenarioParams params;
-  double runLength;
-};
-
 class ScenarioReader {
 public:
-  ScenarioReader();
+  ScenarioReader(const char* file);
   ~ScenarioReader();
 
   const ScenarioParams& getMonitorParams(const char* name) const;
 
+  const char* getSceneWalker(int index) const;
+
+  const ScenarioParams& getSceneWalkerParams(int index) const;
+
+  const char* getSceneDetector(int index) const;
+
+  const ScenarioParams& getSceneDetectorParams(int index) const;
+
 private:
-  struct Context;
-  Context* mContext;
-
-  // TODO: Refactoring
-  static int get_num_scene(const char* scenario);
-  static Scene* parse_to_scenes(const char* scenario, int num);
-
-  static void parse_to_monitors(const char* setting, Context* ctx);
-
   ScenarioReader(const ScenarioReader&);
   ScenarioReader& operator=(const ScenarioReader&);
+
+  struct Context;
+
+  static void parse_scenes(const char* course, Context* ctx);
+  static void parse_monitors(const char* setting, Context* ctx);
+
+  Context* mContext;
 };
 
-#endif // EV3_UNIT_SCENARIO_READER_H_
+#endif // EV3_APP_SCENARIO_READER_H_

@@ -5,7 +5,7 @@
 
 #include "SampleWalker.h"
 
-SampleWalker::SampleWalker(Cockpit* cockpit) : Walker(cockpit) {}
+SampleWalker::SampleWalker(Driver* driver) : Walker(driver) {}
 
 SampleWalker::~SampleWalker() {}
 

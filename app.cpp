@@ -17,7 +17,13 @@
 //#include "Clock.h"
 
 #include "ScenarioWalker.h"
-#include "Cockpit.h"
+#include "LineMonitor.h"
+#include "Starter.h"
+#include "ColorDetector.h"
+#include "StayInPlace.h"
+#include "LineWalker.h"
+#include "SampleWalker.h"
+#include "Driver.h"
 #include "Diagnostics.h"
 
 // デストラクタ問題の回避
@@ -49,10 +55,15 @@ static Diagnostics     *gDiagnostics;
 static ScenarioReader  *gScenarioReader;
 
 static LineMonitor     *gLineMonitor;
-static Cockpit         *gCockpit;
 
-static Walkers          gWalkers;
 static Starter         *gStarter;
+static ColorDetector   *gColorDetector;
+
+static Driver          *gDriver;
+
+static StayInPlace     *gStayInPlace;
+static LineWalker      *gLineWalker;
+static SampleWalker    *gSampleWalker;
 
 static ScenarioWalker  *gScenarioWalker;
 
@@ -65,7 +76,7 @@ static void user_system_create() {
 
     // オブジェクトの作成
     gDiagnostics     = new Diagnostics();
-    gScenarioReader  = new ScenarioReader();
+    gScenarioReader  = new ScenarioReader("scenario.json");
 
     gLineMonitor = new LineMonitor(gColorSensor, gDiagnostics);
 
@@ -73,23 +84,34 @@ static void user_system_create() {
         gLineMonitor,
     };
 
-    gCockpit = new Cockpit(gLineMonitor,
-                           gLeftWheel, gRightWheel);
-
-    Walkers walkers = {
-        .lineWalker = new LineWalker(gLineMonitor,
-                                     gLeftWheel,
-                                     gRightWheel,
-                                     gDiagnostics),
-        .sampleWalker = new SampleWalker(gCockpit),
-    };
-    gWalkers = walkers;
-
     gStarter = new Starter(gTouchSensor);
+    gColorDetector = new ColorDetector(gLineMonitor);
+
+    Detector* detectors[] = {
+        gStarter,
+        gColorDetector,
+    };
+
+    gDriver = new Driver(gLineMonitor, gLeftWheel, gRightWheel);
+
+    gStayInPlace = new StayInPlace(gDriver);
+    gLineWalker = new LineWalker(gDriver,
+                                 gLineMonitor,
+                                 gLeftWheel,
+                                 gRightWheel,
+                                 gDiagnostics);
+    gSampleWalker = new SampleWalker(gDriver);
+
+    Walker* walkers[] = {
+        gStayInPlace,
+        gLineWalker,
+        gSampleWalker,
+    };
 
     gScenarioWalker = new ScenarioWalker(gScenarioReader,
             monitors, sizeof(monitors) / sizeof(monitors[0]),
-            walkers, gStarter);
+            detectors, sizeof(detectors) / sizeof(detectors[0]),
+            walkers, sizeof(walkers) / sizeof(walkers[0]));
 
     // 初期化完了通知
     ev3_led_set_color(LED_ORANGE);
@@ -103,10 +125,12 @@ static void user_system_destroy() {
     gRightWheel.reset();
 
     delete gScenarioWalker;
+    delete gSampleWalker;
+    delete gLineWalker;
+    delete gStayInPlace;
+    delete gDriver;
+    delete gColorDetector;
     delete gStarter;
-    delete gWalkers.lineWalker;
-    delete gWalkers.sampleWalker;
-    delete gCockpit;
     delete gLineMonitor;
     delete gScenarioReader;
     delete gDiagnostics;

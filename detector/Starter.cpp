@@ -4,23 +4,22 @@
  *  Implementation of the Class Starter
  *  Author: Kazuhiro.Kawachi
  *  Copyright (c) 2015 Embedded Technology Software Design Robot Contest
+ *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
 #include "Starter.h"
 
-/**
- * コンストラクタ
- * @param touchSensor タッチセンサ
- */
 Starter::Starter(const ev3api::TouchSensor& touchSensor)
-    : mTouchSensor(touchSensor) {
+    : mTouchSensor(touchSensor) {}
+
+Starter::~Starter() {}
+
+const char* Starter::getClassName() const {
+    return "Starter";
 }
 
-/**
- * 押下中か否か
- * @retval true  押下している
- * @retval false 押下していない
- */
-bool Starter::isPushed() const {
+void Starter::reset(const ScenarioParams& params) {}
+
+bool Starter::on() {
     return mTouchSensor.isPressed();
 }
