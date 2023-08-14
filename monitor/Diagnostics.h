@@ -18,6 +18,10 @@ public:
   Diagnostics();
   ~Diagnostics();
 
+  void init(ColorSensorMode mode);
+
+  void update(uint32_t uptime);
+
   void MonitorColorSensor(ColorSensorMode mode);
   void MonitorGyroSensor();
   void MonitorSonarSensor();
