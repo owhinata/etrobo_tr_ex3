@@ -14,10 +14,10 @@
           "class": "LineWalker",
           "params": {
             "edge": 1.0,
-            "white": 140.0,
-            "black": 10.0,
-            "kp": 0.2,
-            "speed": 30
+            "white": 100.0,
+            "black": 0.0,
+            "kp": 0.5,
+            "speed": 50.0
           },
           "detector": {
             "class": "ColorDetector",
@@ -46,10 +46,10 @@
           "class": "LineWalker",
           "params": {
             "edge": -1.0,
-            "white": 140.0,
-            "black": 10.0,
-            "kp": 0.2,
-            "speed": 30
+            "white": 100.0,
+            "black": 0.0,
+            "kp": 0.5,
+            "speed": 50
           },
           "detector": {
             "class": "ColorDetector",

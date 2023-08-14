@@ -9,8 +9,6 @@
 #ifndef EV3_WALKER_LINE_WALKER_H_
 #define EV3_WALKER_LINE_WALKER_H_
 
-#include <stdint.h>
-
 #include "Walker.h"
 
 class LineWalker : public Walker {
@@ -19,26 +17,20 @@ public:
 
     virtual ~LineWalker();
 
-    virtual void init();
+    virtual const char* getClassName() const;
+
+    virtual void reset(const ScenarioParams& params);
 
     virtual void run();
 
-    virtual const char* getClassName() const;
-
 private:
-    void setCommand();
-    int16_t steeringAmountCalculation();
+    double steeringAmountCalculation(double brightness);
 
-    int mBrightness;
-    int mEdge;
-    bool mIsInitialized;
-
-    static const int RIGHT_EDGE;
-    static const int LEFT_EDGE;
-    static const int WHITE_BRIGHTNESS;
-    static const int BLACK_BRIGHTNESS;
-    static const float STEERING_COEF;
-    static const int BASE_SPEED;
+    double mEdge;
+    double mWhilteBrightness;
+    double mBlackBrightness;
+    double mSteeringCoef;
+    double mBaseSpeed;
 };
 
 #endif  // EV3_WALKER_LINE_WALKER_H_

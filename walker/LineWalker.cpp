@@ -7,17 +7,16 @@
  *****************************************************************************/
 
 #include "LineWalker.h"
-#include "Walker.h"
 
-#include "ev3api.h"
+#include <math.h>
 
 // 定数宣言
-const int LineWalker::RIGHT_EDGE  = 1;      // 左エッジ
-const int LineWalker::LEFT_EDGE   = -1;     // 右エッジ
-const int LineWalker::WHITE_BRIGHTNESS  = 140;      // カラーセンサの輝度設定用
-const int LineWalker::BLACK_BRIGHTNESS  = 10;      // カラーセンサの輝度設定用
-const float LineWalker::STEERING_COEF  = 0.3;      // ステアリング操舵量の係数
-const int LineWalker::BASE_SPEED  = 30;      // 走行標準スピード
+static const double RIGHT_EDGE  = 1.0;      // 左エッジ
+static const double LEFT_EDGE   = -1.0;     // 右エッジ
+static const double WHITE_BRIGHTNESS  = 140.0;      // カラーセンサの輝度設定用
+static const double BLACK_BRIGHTNESS  = 10.0;      // カラーセンサの輝度設定用
+static const double STEERING_COEF  = 0.3;      // ステアリング操舵量の係数
+static const double BASE_SPEED  = 30.0;      // 走行標準スピード
 
 /**
  * コンストラクタ
@@ -27,73 +26,73 @@ const int LineWalker::BASE_SPEED  = 30;      // 走行標準スピード
 LineWalker::LineWalker(Driver* driver)
     : Walker(driver),
       mEdge(LEFT_EDGE),
-      mIsInitialized(false) {
+      mWhilteBrightness(WHITE_BRIGHTNESS),
+      mBlackBrightness(BLACK_BRIGHTNESS),
+      mSteeringCoef(STEERING_COEF),
+      mBaseSpeed(BASE_SPEED) {
 }
 
 LineWalker::~LineWalker() {}
 
 const char* LineWalker::getClassName() const { return "LineWalker"; }
 
+void LineWalker::reset(const ScenarioParams& params) {
+      #define GET(a, b, c) params.get(a, &val) ? b(val) : c
+      double val;
+      mEdge = GET("edge", double, LEFT_EDGE);
+      mWhilteBrightness = GET("white", double, WHITE_BRIGHTNESS);
+      mBlackBrightness = GET("black", double, BLACK_BRIGHTNESS);
+      mSteeringCoef = GET("kp", double, STEERING_COEF);
+      mBaseSpeed = GET("speed", double, BASE_SPEED);
+      printf("  edge:  %f\n"
+             "  white: %f\n"
+             "  black: %f\n"
+             "  kp:    %f\n"
+             "  speed: %f\n",
+             mEdge, mWhilteBrightness, mBlackBrightness,
+             mSteeringCoef, mBaseSpeed);
+}
+
 /**
  * 走行する
  */
 void LineWalker::run() {
-    if (mIsInitialized == false) {
-        //this->init();
-        mIsInitialized = true;
-    }
-
     // 反射光の強さを取得する
-    this->setCommand();
+    double brightness = getBrightness();
 
     // 走行を行う
-    int16_t steeringAmount = this->steeringAmountCalculation();
+    double steeringAmount = steeringAmountCalculation(brightness);
     int leftMotorPower, rightMotorPower;  // 左右モータ設定パワー
 
     /* 左右モータ駆動パワーの計算 */
-    leftMotorPower = (int)(BASE_SPEED + (steeringAmount * mEdge));
-    rightMotorPower = (int)(BASE_SPEED - (steeringAmount * mEdge));
+    leftMotorPower = (int)round(mBaseSpeed + (steeringAmount * mEdge));
+    rightMotorPower = (int)round(mBaseSpeed - (steeringAmount * mEdge));
+    // printf(" left: %d right: %d\n", leftMotorPower, rightMotorPower);
 
     /* 左右モータ駆動パワーの設定 */
     setDriveParam(leftMotorPower, rightMotorPower);
 }
 
 /**
- * 走行に必要なものをリセットする
- */
-void LineWalker::init() {
-    // モータをリセットする
-    // mLeftWheel.reset();
-    // mRightWheel.reset();
-}
-
-/**
- * 反射光の強さを設定する
- * @param brightness 反射光の強さ
- */
-void LineWalker::setCommand() {
-    mBrightness = (int)getBrightness();
-}
-
-/**
  * ステアリング操舵量の計算をする
  * @return ステアリング操舵量
  */
-int16_t LineWalker::steeringAmountCalculation() {
+double LineWalker::steeringAmountCalculation(double brightness) {
 
-    int targetBrightness;      // 目標輝度値
-    float32_t diffBrightness;  // 目標輝度との差分値
-    int16_t steeringAmount;    // ステアリング操舵量
+    double targetBrightness;  // 目標輝度値
+    double diffBrightness;    // 目標輝度との差分値
+    double steeringAmount;    // ステアリング操舵量
 
     /* 目標輝度値の計算 */
-    targetBrightness = (WHITE_BRIGHTNESS - BLACK_BRIGHTNESS) / 2;
+    targetBrightness = (mWhilteBrightness - mBlackBrightness) / 2;
 
     /* 目標輝度値と反射光の強さの差分を計算 */
-    diffBrightness = (float32_t)(targetBrightness - mBrightness);
-    //printf("mBrightness=%d\n", mBrightness);
+    diffBrightness = brightness - targetBrightness;
 
     /* ステアリング操舵量を計算 */
-    steeringAmount = (int16_t)(diffBrightness * STEERING_COEF);
+    steeringAmount = diffBrightness * mSteeringCoef;
+    // printf(" tgt: %f meas: %f steer: %f",
+    //         targetBrightness, brightness, steeringAmount);
 
     return steeringAmount;
 }
