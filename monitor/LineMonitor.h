@@ -15,6 +15,10 @@
 #include "ColorSensor.h"
 #include "Diagnostics.h"
 
+typedef struct {
+    double h, s, v;
+} hsv_raw_t;
+
 class LineMonitor : public Monitor {
 public:
   explicit LineMonitor(const ev3api::ColorSensor& colorSensor,
@@ -26,11 +30,9 @@ public:
 
   virtual const char* getClassName() const;
 
-  virtual void init(const ScenarioParams& params);
-
-  bool isOnBlueLine() const;
-
   double getBrightness() const;
+
+  hsv_raw_t getHsvColor() const;
 
 private:
   const ev3api::ColorSensor& mColorSensor;

@@ -3,8 +3,8 @@
  *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
-#ifndef EV3_APP_DIAGNOSTICS_H_
-#define EV3_APP_DIAGNOSTICS_H_
+#ifndef EV3_MONITOR_DIAGNOSTICS_H_
+#define EV3_MONITOR_DIAGNOSTICS_H_
 
 #include "ColorSensor.h"
 
@@ -35,4 +35,4 @@ private:
   Diagnostics& operator=(const Diagnostics&);
 };
 
-#endif // EV3_APP_DIAGNOSTICS_H_
+#endif // EV3_MONITOR_DIAGNOSTICS_H_

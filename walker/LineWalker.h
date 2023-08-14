@@ -6,8 +6,8 @@
  *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
-#ifndef EV3_UNIT_LINE_WALKER_H_
-#define EV3_UNIT_LINE_WALKER_H_
+#ifndef EV3_WALKER_LINE_WALKER_H_
+#define EV3_WALKER_LINE_WALKER_H_
 
 #include <stdint.h>
 
@@ -15,7 +15,7 @@
 
 class LineWalker : public Walker {
 public:
-    LineWalker(Cockpit* cockpit);
+    LineWalker(Driver* driver);
 
     virtual ~LineWalker();
 
@@ -41,4 +41,4 @@ private:
     static const int BASE_SPEED;
 };
 
-#endif  // EV3_UNIT_LINE_WALKER_H_
+#endif  // EV3_WALKER_LINE_WALKER_H_

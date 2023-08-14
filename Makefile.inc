@@ -6,11 +6,14 @@ APPL_CXXOBJS += \
 	ScenarioParams.o \
 	Monitor.o \
 	LineMonitor.o \
-	Walker.o \
-	SampleWalker.o \
-	LineWalker.o \
+	Detector.o \
 	Starter.o \
-	Cockpit.o \
+	ColorDetector.o \
+	Walker.o \
+	StayInPlace.o \
+	LineWalker.o \
+	SampleWalker.o \
+	Driver.o \
 	Diagnostics.o
 
 APPL_COBJS += \
@@ -28,11 +31,13 @@ endif
 APPL_DIRS += \
 	$(mkfile_path)app \
 	$(mkfile_path)monitor \
-	$(mkfile_path)unit \
+	$(mkfile_path)detector \
+	$(mkfile_path)walker \
 	$(mkfile_path)mjson/src
 
 INCLUDES += \
 	-I$(mkfile_path)app \
 	-I$(mkfile_path)monitor \
-	-I$(mkfile_path)unit \
+	-I$(mkfile_path)detector \
+	-I$(mkfile_path)walker \
 	-I$(mkfile_path)mjson/src \

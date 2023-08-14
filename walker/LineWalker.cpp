@@ -24,8 +24,8 @@ const int LineWalker::BASE_SPEED  = 30;      // 走行標準スピード
  * @param leftWheel  左モータ
  * @param rightWheel 右モータ
  */
-LineWalker::LineWalker(Cockpit* cockpit)
-    : Walker(cockpit),
+LineWalker::LineWalker(Driver* driver)
+    : Walker(driver),
       mEdge(LEFT_EDGE),
       mIsInitialized(false) {
 }
@@ -39,7 +39,7 @@ const char* LineWalker::getClassName() const { return "LineWalker"; }
  */
 void LineWalker::run() {
     if (mIsInitialized == false) {
-        this->init();
+        //this->init();
         mIsInitialized = true;
     }
 

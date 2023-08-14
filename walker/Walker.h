@@ -3,35 +3,33 @@
  *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
-#ifndef EV3_UNIT_WALKER_H_
-#define EV3_UNIT_WALKER_H_
+#ifndef EV3_WALKER_WALKER_H_
+#define EV3_WALKER_WALKER_H_
 
-class Cockpit;
-class WalkerParams;
+#include "Driver.h"
+#include "ScenarioParams.h"
 
 class Walker {
 public:
-  Walker(Cockpit* cockpit);
+  Walker(Driver* driver);
 
   virtual ~Walker();
 
   virtual void init();
 
-  virtual void reset();
+  virtual void reset(const ScenarioParams& params);
 
   virtual void run() = 0;
 
   virtual const char* getClassName() const = 0;
 
-  void setParams(const WalkerParams& params);
-
 protected:
-  bool getWalkerParam(const char* key, int keyLength, double* value);
+  void stop();
   void setDriveParam(int leftPWM, int rightPWM);
   double getBrightness() const;
 
 private:
-  void* mContext;
+  Driver* mDriver;
 };
 
 #endif  // EV3_UNIT_WALKER_H_
