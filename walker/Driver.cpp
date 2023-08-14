@@ -5,10 +5,12 @@
 
 #include "Driver.h"
 
-Driver::Driver(LineMonitor* lineMonitor,
+Driver::Driver(Uptime* uptime,
+               LineMonitor* lineMonitor,
                ev3api::Motor& leftWheel,
                ev3api::Motor& rightWheel)
-  : mLineMonitor(lineMonitor),
+  : mUptime(uptime),
+    mLineMonitor(lineMonitor),
     mLeftWheel(leftWheel),
     mRightWheel(rightWheel) {}
 
@@ -26,4 +28,8 @@ void Driver::setDriveParam(int leftPWM, int rightPWM) {
 
 double Driver::getBrightness() const {
   return mLineMonitor->getBrightness();
+}
+
+uint32_t Driver::getUptime() const {
+  return mUptime->getUptime();
 }
