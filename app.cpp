@@ -100,7 +100,7 @@ static void user_system_create() {
         gColorDetector,
     };
 
-    gDriver = new Driver(gLineMonitor, gLeftWheel, gRightWheel);
+    gDriver = new Driver(gUptime, gLineMonitor, gLeftWheel, gRightWheel);
 
     gStayInPlace = new StayInPlace(gDriver);
     gLineWalker = new LineWalker(gDriver);
