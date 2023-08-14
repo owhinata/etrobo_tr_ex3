@@ -9,6 +9,8 @@
 #include "LineWalker.h"
 #include "Walker.h"
 
+#include "ev3api.h"
+
 // 定数宣言
 const int LineWalker::RIGHT_EDGE  = 1;      // 左エッジ
 const int LineWalker::LEFT_EDGE   = -1;     // 右エッジ
@@ -22,28 +24,16 @@ const int LineWalker::BASE_SPEED  = 30;      // 走行標準スピード
  * @param leftWheel  左モータ
  * @param rightWheel 右モータ
  */
-LineWalker::LineWalker(const LineMonitor* lineMonitor,
-                        ev3api::Motor& leftWheel,
-                        ev3api::Motor& rightWheel)
-    : mLineMonitor(lineMonitor),
-      mLeftWheel(leftWheel),
-      mRightWheel(rightWheel),
+LineWalker::LineWalker(Cockpit* cockpit)
+    : Walker(cockpit),
       mEdge(LEFT_EDGE),
-      mIsInitialized(false),
-      diag_() {
+      mIsInitialized(false) {
 }
 
-LineWalker::LineWalker(const LineMonitor* lineMonitor,
-                        ev3api::Motor& leftWheel,
-                        ev3api::Motor& rightWheel,
-                        Diagnostics* diag)
-    : mLineMonitor(lineMonitor),
-      mLeftWheel(leftWheel),
-      mRightWheel(rightWheel),
-      mEdge(LEFT_EDGE),
-      mIsInitialized(false),
-      diag_(diag) {
-}
+LineWalker::~LineWalker() {}
+
+const char* LineWalker::getClassName() const { return "LineWalker"; }
+
 /**
  * 走行する
  */
@@ -52,19 +42,12 @@ void LineWalker::run() {
         this->init();
         mIsInitialized = true;
     }
-    if (diag_) {
-      diag_->MonitorColorSensor(kColorSensorModeRgbRaw);
-      diag_->MonitorGyroSensor();
-    }
 
     // 反射光の強さを取得する
     this->setCommand();
 
     // 走行を行う
     int16_t steeringAmount = this->steeringAmountCalculation();
-    if (diag_) {
-      diag_->MonitorMotors();
-    }
     int leftMotorPower, rightMotorPower;  // 左右モータ設定パワー
 
     /* 左右モータ駆動パワーの計算 */
@@ -72,8 +55,7 @@ void LineWalker::run() {
     rightMotorPower = (int)(BASE_SPEED - (steeringAmount * mEdge));
 
     /* 左右モータ駆動パワーの設定 */
-    mLeftWheel.setPWM(leftMotorPower);
-    mRightWheel.setPWM(rightMotorPower);
+    setDriveParam(leftMotorPower, rightMotorPower);
 }
 
 /**
@@ -81,8 +63,8 @@ void LineWalker::run() {
  */
 void LineWalker::init() {
     // モータをリセットする
-    mLeftWheel.reset();
-    mRightWheel.reset();
+    // mLeftWheel.reset();
+    // mRightWheel.reset();
 }
 
 /**
@@ -90,7 +72,7 @@ void LineWalker::init() {
  * @param brightness 反射光の強さ
  */
 void LineWalker::setCommand() {
-    mBrightness = (int)mLineMonitor->getBrightness();
+    mBrightness = (int)getBrightness();
 }
 
 /**

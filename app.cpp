@@ -77,10 +77,7 @@ static void user_system_create() {
                            gLeftWheel, gRightWheel);
 
     Walkers walkers = {
-        .lineWalker = new LineWalker(gLineMonitor,
-                                     gLeftWheel,
-                                     gRightWheel,
-                                     gDiagnostics),
+        .lineWalker = new LineWalker(gCockpit),
         .sampleWalker = new SampleWalker(gCockpit),
     };
     gWalkers = walkers;

@@ -9,41 +9,36 @@
 #ifndef EV3_UNIT_LINE_WALKER_H_
 #define EV3_UNIT_LINE_WALKER_H_
 
-#include "LineMonitor.h"
-#include "Motor.h"
-#include "Diagnostics.h"
+#include <stdint.h>
 
-class LineWalker {
+#include "Walker.h"
+
+class LineWalker : public Walker {
 public:
+    LineWalker(Cockpit* cockpit);
+
+    virtual ~LineWalker();
+
+    virtual void init();
+
+    virtual void run();
+
+    virtual const char* getClassName() const;
+
+private:
+    void setCommand();
+    int16_t steeringAmountCalculation();
+
+    int mBrightness;
+    int mEdge;
+    bool mIsInitialized;
+
     static const int RIGHT_EDGE;
     static const int LEFT_EDGE;
     static const int WHITE_BRIGHTNESS;
     static const int BLACK_BRIGHTNESS;
     static const float STEERING_COEF;
     static const int BASE_SPEED;
-
-    LineWalker(const LineMonitor* lineMonitor,
-                ev3api::Motor& leftWheel,
-                ev3api::Motor& rightWheel);
-
-    LineWalker(const LineMonitor* lineMonitor,
-                ev3api::Motor& leftWheel,
-                ev3api::Motor& rightWheel,
-                Diagnostics* diag);
-
-    void init();
-    void run();
-    void setCommand();
-    int16_t steeringAmountCalculation();
-
-private:
-    const LineMonitor* mLineMonitor;
-    ev3api::Motor& mLeftWheel;
-    ev3api::Motor& mRightWheel;
-    int mBrightness;
-    int mEdge;
-    bool mIsInitialized;
-    Diagnostics* diag_;
 };
 
 #endif  // EV3_UNIT_LINE_WALKER_H_
