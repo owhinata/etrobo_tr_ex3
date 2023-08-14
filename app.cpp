@@ -95,11 +95,7 @@ static void user_system_create() {
     gDriver = new Driver(gLineMonitor, gLeftWheel, gRightWheel);
 
     gStayInPlace = new StayInPlace(gDriver);
-    gLineWalker = new LineWalker(gDriver,
-                                 gLineMonitor,
-                                 gLeftWheel,
-                                 gRightWheel,
-                                 gDiagnostics);
+    gLineWalker = new LineWalker(gDriver);
     gSampleWalker = new SampleWalker(gDriver);
 
     Walker* walkers[] = {

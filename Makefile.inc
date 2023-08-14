@@ -33,7 +33,6 @@ APPL_DIRS += \
 	$(mkfile_path)monitor \
 	$(mkfile_path)detector \
 	$(mkfile_path)walker \
-	$(mkfile_path)unit \
 	$(mkfile_path)mjson/src
 
 INCLUDES += \
@@ -41,5 +40,4 @@ INCLUDES += \
 	-I$(mkfile_path)monitor \
 	-I$(mkfile_path)detector \
 	-I$(mkfile_path)walker \
-	-I$(mkfile_path)unit \
 	-I$(mkfile_path)mjson/src \
