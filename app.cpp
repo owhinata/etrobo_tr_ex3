@@ -8,7 +8,16 @@
  *****************************************************************************/
 
 #include "app.h"
-#include "RandomWalker.h"
+
+#include "ColorSensor.h"
+#include "GyroSensor.h"
+#include "SonarSensor.h"
+#include "TouchSensor.h"
+#include "Motor.h"
+//#include "Clock.h"
+
+#include "ScenarioWalker.h"
+#include "Cockpit.h"
 #include "Diagnostics.h"
 
 // デストラクタ問題の回避
@@ -17,48 +26,35 @@
 
 // using宣言
 using ev3api::ColorSensor;
+using ev3api::GyroSensor;
+using ev3api::SonarSensor;
 using ev3api::TouchSensor;
 using ev3api::Motor;
-using ev3api::Clock;
+//using ev3api::Clock;
 
 // Device objects
 // オブジェクトを静的に確保する
 ColorSensor gColorSensor(PORT_2);
+GyroSensor  gGyroSensr(PORT_4);
+SonarSensor gSonarSensor(PORT_3);
 TouchSensor gTouchSensor(PORT_1);
 Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
-Clock       gClock;
-
-// TODO: move with the use case
-#include "GyroSensor.h"
-using ev3api::GyroSensor;
-GyroSensor gGyroSensr(PORT_4);
-//#include "SonarSensor.h"
-//using ev3api::SonarSensor;
-//SonarSensor gSonarSensor(PORT_3);
-
-// オブジェクトの定義
-static Diagnostics     *gDiagnostics;
-static Walker          *gWalker;
-static LineWalker      *gLineWalker;
-static LineMonitor     *gLineMonitor;
-static Starter         *gStarter;
-static SimpleTimer     *gScenarioTimer;
-static SimpleTimer     *gWalkerTimer;
-//static LineTracer      *gLineTracer;
-static Scenario        *gScenario;
-static ScenarioTracer  *gScenarioTracer;
-static RandomWalker    *gRandomWalker;
+//Clock       gClock;
 
 static int diag_exit_;
 
-// scene object
-static Scene gScenes[] = {
-    { TURN_LEFT,   1250 * 1000, 0 },  // 左旋回1.25秒
-    { GO_STRAIGHT, 5000 * 1000, 0 },  // 直進5秒
-    { TURN_LEFT,   1250 * 1000, 0 },  // 左旋回1.25秒
-    { GO_STRAIGHT, 2500 * 1000, 0 }   // 直進2.5秒
-};
+// オブジェクトの定義
+static Diagnostics     *gDiagnostics;
+static ScenarioReader  *gScenarioReader;
+
+static LineMonitor     *gLineMonitor;
+static Cockpit         *gCockpit;
+
+static Walkers          gWalkers;
+static Starter         *gStarter;
+
+static ScenarioWalker  *gScenarioWalker;
 
 /**
  * EV3システム生成
@@ -69,32 +65,32 @@ static void user_system_create() {
 
     // オブジェクトの作成
     gDiagnostics     = new Diagnostics();
-    gWalker          = new Walker(gLeftWheel,
-                                  gRightWheel,
-                                  gDiagnostics);
-    gLineMonitor     = new LineMonitor(gColorSensor);
-    gLineWalker      = new LineWalker(gLineMonitor,
-                                      gLeftWheel,
-                                      gRightWheel,
-                                      gDiagnostics);
-    gStarter         = new Starter(gTouchSensor);
-    gScenarioTimer   = new SimpleTimer(gClock);
-    gWalkerTimer     = new SimpleTimer(gClock);
-    //gLineTracer      = new LineTracer(gLineMonitor, gLineWalker, gDiagnostics);
-    gScenario        = new Scenario(0);
-    gScenarioTracer  = new ScenarioTracer(gWalker,
-                                          gScenario,
-                                          gScenarioTimer);
-    gRandomWalker    = new RandomWalker(gLineWalker,
-                                        gScenarioTracer,
-                                        gStarter,
-                                        gWalkerTimer,
-                                        gDiagnostics);
+    gScenarioReader  = new ScenarioReader();
 
-    // シナリオを構築する
-    for (uint32_t i = 0; i < (sizeof(gScenes)/sizeof(gScenes[0])); i++) {
-        gScenario->add(&gScenes[i]);
-    }
+    gLineMonitor = new LineMonitor(gColorSensor, gDiagnostics);
+
+    Monitor* monitors[] = {
+        gLineMonitor,
+    };
+
+    gCockpit = new Cockpit(gLineMonitor,
+                           gLeftWheel, gRightWheel);
+
+    Walkers walkers = {
+        .lineWalker = new LineWalker(gLineMonitor,
+                                     gLeftWheel,
+                                     gRightWheel,
+                                     gDiagnostics),
+        .sampleWalker = new SampleWalker(gCockpit),
+    };
+    gWalkers = walkers;
+
+    gStarter = new Starter(gTouchSensor);
+
+    gScenarioWalker = new ScenarioWalker(gScenarioReader,
+            monitors, sizeof(monitors) / sizeof(monitors[0]),
+            walkers, gStarter);
+
     // 初期化完了通知
     ev3_led_set_color(LED_ORANGE);
 }
@@ -106,17 +102,14 @@ static void user_system_destroy() {
     gLeftWheel.reset();
     gRightWheel.reset();
 
-    delete gRandomWalker;
-    delete gScenarioTracer;
-    delete gScenario;
-    //delete gLineTracer;
-    delete gWalkerTimer;
-    delete gScenarioTimer;
-    delete gLineMonitor;
+    delete gScenarioWalker;
     delete gStarter;
-    delete gWalker;
+    delete gWalkers.lineWalker;
+    delete gWalkers.sampleWalker;
+    delete gCockpit;
+    delete gLineMonitor;
+    delete gScenarioReader;
     delete gDiagnostics;
-    delete gLineWalker;
 }
 
 /**
@@ -124,10 +117,7 @@ static void user_system_destroy() {
  */
 void main_task(intptr_t unused) {
     user_system_create();  // センサやモータの初期化処理
-
-    // 周期ハンドラ開始
-    sta_cyc(CYC_TRACER);
-
+    sta_cyc(CYC_TRACER);  // 周期ハンドラ開始
     slp_tsk();  // バックボタンが押されるまで待つ
 
     // 周期ハンドラ停止
@@ -138,7 +128,6 @@ void main_task(intptr_t unused) {
     tslp_tsk(10U * 1000U);
 
     user_system_destroy();  // 終了処理
-
     ext_tsk();
 }
 
@@ -149,10 +138,9 @@ void tracer_task(intptr_t exinf) {
     if (ev3_button_is_pressed(BACK_BUTTON)) {
         wup_tsk(MAIN_TASK);  // バックボタン押下
     } else {
-        gRandomWalker->run();  // 走行
+        gScenarioWalker->run();  // 走行
         wup_tsk(DIAGNOSTICS_TASK);
     }
-
     ext_tsk();
 }
 
