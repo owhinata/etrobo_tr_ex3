@@ -5,9 +5,11 @@ APPL_CXXOBJS += \
 	ScenarioReader.o \
 	ScenarioParams.o \
 	Monitor.o \
+	Uptime.o \
 	LineMonitor.o \
 	Detector.o \
 	Starter.o \
+	Timer.o \
 	ColorDetector.o \
 	Walker.o \
 	StayInPlace.o \
