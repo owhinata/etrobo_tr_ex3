@@ -63,6 +63,8 @@ Diagnostics::~Diagnostics() {
   delete ctx_;
 }
 
+void Diagnostics::init(ColorSensorMode mode) {}
+
 void Diagnostics::Commit() {
   if (ctx_->invalidate) {
     if (ctx_->fp) {
@@ -79,13 +81,11 @@ void Diagnostics::Commit() {
   ctx_->invalidate = 0;
 }
 
-void Diagnostics::Invalidate() {
-  if (!ctx_->invalidate) {
-    SYSTIM now;
-    get_tim(&now);
-    ctx_->elapsed = static_cast<uint32_t>(now - ctx_->start);
-    ++ctx_->invalidate;
-  }
+void Diagnostics::Invalidate() { ++ctx_->invalidate; }
+
+void Diagnostics::update(uint32_t uptime) {
+  ctx_->elapsed = uptime;
+  ctx_->invalidate = 0;
 }
 
 void Diagnostics::MonitorColorSensor(ColorSensorMode mode) {

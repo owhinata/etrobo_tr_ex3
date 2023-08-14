@@ -14,11 +14,13 @@
 #include "SonarSensor.h"
 #include "TouchSensor.h"
 #include "Motor.h"
-//#include "Clock.h"
+#include "Clock.h"
 
 #include "ScenarioWalker.h"
+#include "Uptime.h"
 #include "LineMonitor.h"
 #include "Starter.h"
+#include "Timer.h"
 #include "ColorDetector.h"
 #include "StayInPlace.h"
 #include "LineWalker.h"
@@ -36,7 +38,7 @@ using ev3api::GyroSensor;
 using ev3api::SonarSensor;
 using ev3api::TouchSensor;
 using ev3api::Motor;
-//using ev3api::Clock;
+using ev3api::Clock;
 
 // Device objects
 // オブジェクトを静的に確保する
@@ -46,7 +48,7 @@ SonarSensor gSonarSensor(PORT_3);
 TouchSensor gTouchSensor(PORT_1);
 Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
-//Clock       gClock;
+Clock       gClock;
 
 static int diag_exit_;
 
@@ -54,9 +56,11 @@ static int diag_exit_;
 static Diagnostics     *gDiagnostics;
 static ScenarioReader  *gScenarioReader;
 
+static Uptime          *gUptime;
 static LineMonitor     *gLineMonitor;
 
 static Starter         *gStarter;
+static Timer           *gTimer;
 static ColorDetector   *gColorDetector;
 
 static Driver          *gDriver;
@@ -78,17 +82,21 @@ static void user_system_create() {
     gDiagnostics     = new Diagnostics();
     gScenarioReader  = new ScenarioReader("scenario.json");
 
+    gUptime = new Uptime(gClock, gDiagnostics);
     gLineMonitor = new LineMonitor(gColorSensor, gDiagnostics);
 
     Monitor* monitors[] = {
+        gUptime,
         gLineMonitor,
     };
 
     gStarter = new Starter(gTouchSensor);
+    gTimer = new Timer(gUptime);
     gColorDetector = new ColorDetector(gLineMonitor);
 
     Detector* detectors[] = {
         gStarter,
+        gTimer,
         gColorDetector,
     };
 
@@ -126,8 +134,10 @@ static void user_system_destroy() {
     delete gStayInPlace;
     delete gDriver;
     delete gColorDetector;
+    delete gTimer;
     delete gStarter;
     delete gLineMonitor;
+    delete gUptime;
     delete gScenarioReader;
     delete gDiagnostics;
 }
