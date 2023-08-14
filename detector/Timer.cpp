@@ -21,11 +21,13 @@ public:
     timeout = GET("timeout", float, 0.0f);
     start = time->getUptime();
     printf("  timeout: %f\n", timeout);
+    // printf("  start: %u\n", start);
+    // printf("  float: %f\n", float(start) * 1e-6);
+    // printf("  double: %f\n", double(start) * 1e-6);
   }
 
   bool on() {
-    uint32_t us = time->getUptime() - start;
-    return float(us) * 1e-6 >= timeout;
+    return float(time->getUptime() - start) * 1e-6 >= timeout;
   }
 };
 

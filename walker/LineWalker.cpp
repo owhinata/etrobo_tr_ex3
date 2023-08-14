@@ -67,6 +67,9 @@ void LineWalker::run() {
     /* 左右モータ駆動パワーの計算 */
     leftMotorPower = (int)round(mBaseSpeed + (steeringAmount * mEdge));
     rightMotorPower = (int)round(mBaseSpeed - (steeringAmount * mEdge));
+    // printf(" l: %f r: %f",
+    //        mBaseSpeed + (steeringAmount * mEdge),
+    //        mBaseSpeed - (steeringAmount * mEdge));
     // printf(" left: %d right: %d\n", leftMotorPower, rightMotorPower);
 
     /* 左右モータ駆動パワーの設定 */
@@ -91,8 +94,8 @@ double LineWalker::steeringAmountCalculation(double brightness) {
 
     /* ステアリング操舵量を計算 */
     steeringAmount = diffBrightness * mSteeringCoef;
-    // printf(" tgt: %f meas: %f steer: %f",
-    //         targetBrightness, brightness, steeringAmount);
+    // printf(" meas: %f tgt: %f steer: %f",
+    //        brightness, targetBrightness, steeringAmount);
 
     return steeringAmount;
 }
