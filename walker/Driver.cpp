@@ -21,6 +21,7 @@ void Driver::stop() {
   mRightWheel.setPWM(0);
   mLeftWheel.stop();
   mRightWheel.stop();
+  mDiag->setDriveParam(0.0, 0.0);
 }
 
 void Driver::setDriveParam(int leftPWM, int rightPWM) {

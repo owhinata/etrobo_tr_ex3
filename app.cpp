@@ -23,6 +23,7 @@
 #include "Starter.h"
 #include "Timer.h"
 #include "ColorDetector.h"
+#include "SwitchEdgeDetector.h"
 #include "StayInPlace.h"
 #include "LineWalker.h"
 #include "SampleWalker.h"
@@ -64,6 +65,7 @@ static PoseEstimator   *gPoseEstimator;
 static Starter         *gStarter;
 static Timer           *gTimer;
 static ColorDetector   *gColorDetector;
+static SwitchEdgeDetector *gSwithEdgeDetector;
 
 static Driver          *gDriver;
 
@@ -98,11 +100,13 @@ static void user_system_create() {
     gStarter = new Starter(gTouchSensor);
     gTimer = new Timer(gUptime);
     gColorDetector = new ColorDetector(gLineMonitor);
+    gSwithEdgeDetector = new SwitchEdgeDetector(gLineMonitor);
 
     Detector* detectors[] = {
         gStarter,
         gTimer,
         gColorDetector,
+        gSwithEdgeDetector,
     };
 
     gDriver = new Driver(gUptime, gLineMonitor, gLeftWheel, gRightWheel,
@@ -139,6 +143,7 @@ static void user_system_destroy() {
     delete gLineWalker;
     delete gStayInPlace;
     delete gDriver;
+    delete gSwithEdgeDetector;
     delete gColorDetector;
     delete gTimer;
     delete gStarter;

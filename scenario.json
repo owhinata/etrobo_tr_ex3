@@ -6,125 +6,105 @@
       "scenes": [
         {
           "class": "StayInPlace",
-          "detector": {
-            "class": "Starter"
-          }
+          "detector": { "class": "Starter" }
         },
         {
           "class": "LineWalker",
-          "params": {
-            "edge": 1.0,
-            "white": 100.0,
-            "black": 0.0,
-            "kp": 0.5,
-            "speed": 50.0
-          },
-          "detector": {
-            "class": "Timer",
-            "params": {
-              "timeout": 1.0
-            }
-          }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 1.0 } }
         },
         {
           "class": "LineWalker",
-          "params": {
-            "edge": 1.0,
-            "white": 100.0,
-            "black": 0.0,
-            "kp": 0.32,
-            "speed": 92.0
-          },
-          "detector": {
-            "class": "Timer",
-            "params": {
-              "timeout": 7.0
-            }
-          }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.24, "speed": 92.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 7.0 } }
         },
         {
           "class": "LineWalker",
-          "params": {
-            "edge": 1.0,
-            "white": 100.0,
-            "black": 0.0,
-            "kp": 0.5,
-            "speed": 50.0
-          },
-          "detector": {
-            "class": "Timer",
-            "params": {
-              "timeout": 3.0
-            }
-          }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 3.0 } }
         },
         {
           "class": "LineWalker",
-          "params": {
-            "edge": 1.0,
-            "white": 100.0,
-            "black": 0.0,
-            "kp": 0.32,
-            "speed": 92.0
-          },
-          "detector": {
-            "class": "Timer",
-            "params": {
-              "timeout": 3.5
-            }
-          }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.24, "speed": 92.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 3.5 } }
         },
         {
           "class": "LineWalker",
-          "params": {
-            "edge": 1.0,
-            "white": 100.0,
-            "black": 0.0,
-            "kp": 0.5,
-            "speed": 50.0
-          },
-          "detector": {
-            "class": "ColorDetector",
-            "params": {
-              "hue": 204.0,
-              "saturation": 0.50,
-              "count": 5
-            }
-          }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
+          "detector": { "class": "ColorDetector", "params": { "hue": 150.0, "saturation": 0.5, "count": 5 } }
         },
         {
           "class": "LineWalker",
-          "params": {
-            "edge": 1.0,
-            "white": 100.0,
-            "black": 0.0,
-            "kp": 0.5,
-            "speed": 30.0
-          },
-          "detector": {
-            "class": "Timer",
-            "params": {
-              "timeout": 3.0
-            }
-          }
+          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "speed": 30.0 },
+          "detector": { "class": "SwitchEdgeDetector" }
         },
         {
           "class": "LineWalker",
-          "params": {
-            "edge": 1.0,
-            "white": 100.0,
-            "black": 0.0,
-            "kp": 0.32,
-            "speed": 92.0
-          },
-          "detector": {
-            "class": "ColorDetector",
-            "params": {
-              "hue": -20.0,
-              "saturation": 0.36,
-              "count": 5
-            }
-          }
+          "params": { "edge": -1.0, "white": 120.0, "black": 0.0, "kp": 0.5, "speed": 35.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 1.0 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": -1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "speed": 30.0 },
+          "detector": { "class": "SwitchEdgeDetector" }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 35.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 1 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 60.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 3.0 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 40.0 },
+          "detector": { "class": "ColorDetector", "params": { "hue": 150.0, "saturation": 0.5, "count": 5 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "speed": 30.0 },
+          "detector": { "class": "SwitchEdgeDetector" }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": -1.0, "white": 160.0, "black": 0.0, "kp": 0.5, "speed": 35.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 1.0 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": -1.0, "white": 120.0, "black": 0.0, "kp": 0.5, "speed": 40.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 2.0 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 60.0 },
+          "detector": { "class": "ColorDetector", "params": { "hue": 150.0, "saturation": 0.5, "count": 5 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": -1.0, "white": 140.0, "black": 0.0, "kp": 0.5, "speed": 30.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 10.0 } }
+        },
+        {
+          "class": "StayInPlace"
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
+          "detector": { "class": "ColorDetector", "params": { "hue": 204.0, "saturation": 0.50, "count": 5 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 30.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 3.0 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "speed": 92.0 },
+          "detector": { "class": "ColorDetector", "params": { "hue": -20.0, "saturation": 0.36, "count": 5 } }
         },
         {
           "class": "StayInPlace"
