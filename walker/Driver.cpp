@@ -8,11 +8,13 @@
 Driver::Driver(Uptime* uptime,
                LineMonitor* lineMonitor,
                ev3api::Motor& leftWheel,
-               ev3api::Motor& rightWheel)
+               ev3api::Motor& rightWheel,
+               Diagnostics* diag)
   : mUptime(uptime),
     mLineMonitor(lineMonitor),
     mLeftWheel(leftWheel),
-    mRightWheel(rightWheel) {}
+    mRightWheel(rightWheel),
+    mDiag(diag) {}
 
 void Driver::stop() {
   mLeftWheel.setPWM(0);
@@ -24,6 +26,7 @@ void Driver::stop() {
 void Driver::setDriveParam(int leftPWM, int rightPWM) {
   mLeftWheel.setPWM(leftPWM);
   mRightWheel.setPWM(rightPWM);
+  mDiag->setDriveParam(float(leftPWM), float(rightPWM));
 }
 
 double Driver::getBrightness() const {

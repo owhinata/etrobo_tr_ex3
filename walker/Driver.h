@@ -9,13 +9,15 @@
 #include "Uptime.h"
 #include "LineMonitor.h"
 #include "Motor.h"
+#include "Diagnostics.h"
 
 class Driver {
 public:
   Driver(Uptime* uptime,
          LineMonitor* lineMonitor,
          ev3api::Motor& leftWheel,
-         ev3api::Motor& rightWheel);
+         ev3api::Motor& rightWheel,
+         Diagnostics* diag);
 
   void stop();
 
@@ -30,6 +32,7 @@ private:
   LineMonitor* mLineMonitor;
   ev3api::Motor& mLeftWheel;
   ev3api::Motor& mRightWheel;
+  Diagnostics* mDiag;
 };
 
 #endif  // EV3_WALKER_DRIVER_H_

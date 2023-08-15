@@ -19,6 +19,7 @@
 #include "ScenarioWalker.h"
 #include "Uptime.h"
 #include "LineMonitor.h"
+#include "PoseEstimator.h"
 #include "Starter.h"
 #include "Timer.h"
 #include "ColorDetector.h"
@@ -58,6 +59,7 @@ static ScenarioReader  *gScenarioReader;
 
 static Uptime          *gUptime;
 static LineMonitor     *gLineMonitor;
+static PoseEstimator   *gPoseEstimator;
 
 static Starter         *gStarter;
 static Timer           *gTimer;
@@ -84,10 +86,13 @@ static void user_system_create() {
 
     gUptime = new Uptime(gClock, gDiagnostics);
     gLineMonitor = new LineMonitor(gColorSensor, gDiagnostics);
+    gPoseEstimator = new PoseEstimator(gLeftWheel, gRightWheel, gGyroSensr,
+                                       gDiagnostics);
 
     Monitor* monitors[] = {
         gUptime,
         gLineMonitor,
+        gPoseEstimator,
     };
 
     gStarter = new Starter(gTouchSensor);
@@ -100,7 +105,8 @@ static void user_system_create() {
         gColorDetector,
     };
 
-    gDriver = new Driver(gUptime, gLineMonitor, gLeftWheel, gRightWheel);
+    gDriver = new Driver(gUptime, gLineMonitor, gLeftWheel, gRightWheel,
+                         gDiagnostics);
 
     gStayInPlace = new StayInPlace(gDriver);
     gLineWalker = new LineWalker(gDriver);
@@ -136,6 +142,7 @@ static void user_system_destroy() {
     delete gColorDetector;
     delete gTimer;
     delete gStarter;
+    delete gPoseEstimator;
     delete gLineMonitor;
     delete gUptime;
     delete gScenarioReader;

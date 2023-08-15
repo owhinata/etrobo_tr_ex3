@@ -12,7 +12,8 @@
 struct LineMonitor::Context {
     rgb_raw_t rgb;
     hsv_raw_t hsv;
-    Context() : rgb(), hsv() {}
+    double y;
+    Context() : rgb(), hsv(), y() {}
 };
 
 LineMonitor::LineMonitor(const ev3api::ColorSensor& colorSensor,
@@ -51,10 +52,8 @@ static uint16_t min(const rgb_raw_t& rgb) {
 void LineMonitor::update() {
     rgb_raw_t& rgb = mContext->rgb;
     hsv_raw_t& hsv = mContext->hsv;
+    double& y = mContext->y;
 
-    if (mDiag) {
-        mDiag->MonitorColorSensor(kColorSensorModeRgbRaw);
-    }
     mColorSensor.getRawColor(rgb);
 
     const uint16_t a = max(rgb), b = min(rgb);
@@ -70,16 +69,20 @@ void LineMonitor::update() {
     } else {
         hsv.h = 0.0;
     }
-
-    hsv.s = double(a - b) / double(a);
+    if (a) {
+        hsv.s = double(a - b) / double(a);
+    } else {
+        hsv.s = 0;
+    }
     hsv.v = double(a);
+
+    y = 0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b;
+
+    double _rgb[] = { float(rgb.r), float(rgb.g), float(rgb.r) };
+    double _hsv[] = { hsv.h, hsv.s, hsv.v };
+    mDiag->setColor(_rgb, _hsv, y);
 }
 
-double LineMonitor::getBrightness() const {
-    const rgb_raw_t& rgb = mContext->rgb;
-    return 0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b;
-}
+double LineMonitor::getBrightness() const { return mContext->y; }
 
-hsv_raw_t LineMonitor::getHsvColor() const {
-    return mContext->hsv;
-}
+hsv_raw_t LineMonitor::getHsvColor() const { return mContext->hsv; }
