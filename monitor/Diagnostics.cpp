@@ -21,20 +21,20 @@ static const motor_port_t kRightMotorPort = EV3_PORT_B;
 
 struct Diagnostics::Context {
   struct {
-    uint16_t r, g, b;
-    int8_t brightness;
+    double r, g, b;
+    double h, s, v, y;
   } color;
   struct {
-    uint16_t angle, rate;
+    double yaw, w;
   } gyro;
   struct {
-    uint16_t distance;
+    double distance;
   } ultrasonic;
   struct {
-    int count, power;
+    double count, power;
   } left_motor, right_motor;
   int invalidate;
-  uint32_t elapsed;
+  double elapsed;
   SYSTIM start;
   FILE *fp;
   char key[29];
@@ -46,13 +46,15 @@ Diagnostics::Diagnostics() : ctx_(new Context) {
 #ifdef MAKE_RASPIKE
   time_t now = time(0);
   strftime(ctx_->key, sizeof(ctx_->key), "\"EtRobo %F %T\"", localtime(&now));
-  strftime(file, sizeof(file), "EtRobo_%F_%T.log", localtime(&now));
+  strftime(file, sizeof(file), "EtRobo_%F_%T.csv", localtime(&now));
 #else
   snprintf(ctx_->key, sizeof(ctx_->key), "%s", "\"EtRobo\"");
-  snprintf(file, sizeof(file), "%s.log", "EtRobo");
+  snprintf(file, sizeof(file), "%s.csv", "EtRobo");
 #endif
   ctx_->fp = fopen(file, "w");
-  printf("%p\n", ctx_->fp);
+  if (ctx_->fp) {
+    fprintf(ctx_->fp, ",r,g,b,h,s,v,y,foward,turn,w,yaw,lc,rc\n");
+  }
   get_tim(&ctx_->start);
 }
 
@@ -63,32 +65,52 @@ Diagnostics::~Diagnostics() {
   delete ctx_;
 }
 
-void Diagnostics::init(ColorSensorMode mode) {}
-
 void Diagnostics::Commit() {
-  if (ctx_->invalidate) {
-    if (ctx_->fp) {
-      fprintf(ctx_->fp,
-              "XADD %s * AA %lu BA %u BB %u BC %u BD %d "
-              "CA %u CB %u DA %u EA %d EB %d FA %d FB %d\n",
-              ctx_->key, ctx_->elapsed, ctx_->color.r, ctx_->color.g,
-              ctx_->color.b, ctx_->color.brightness, ctx_->gyro.angle,
-              ctx_->gyro.rate, ctx_->ultrasonic.distance,
-              ctx_->left_motor.count, ctx_->left_motor.power,
-              ctx_->right_motor.count, ctx_->right_motor.power);
-    }
+  if (ctx_->fp && ctx_->invalidate) {
+    fprintf(ctx_->fp, "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",
+            ctx_->elapsed, ctx_->color.r, ctx_->color.g, ctx_->color.b,
+            ctx_->color.h, ctx_->color.s, ctx_->color.v, ctx_->color.y,
+            (ctx_->right_motor.power + ctx_->left_motor.power) / 2.0,
+            ctx_->right_motor.power - ctx_->left_motor.power,
+            ctx_->gyro.w, ctx_->gyro.yaw,
+            ctx_->left_motor.count, ctx_->right_motor.count);
   }
   ctx_->invalidate = 0;
 }
 
-void Diagnostics::Invalidate() { ++ctx_->invalidate; }
-
 void Diagnostics::update(uint32_t uptime) {
-  ctx_->elapsed = uptime;
+  ctx_->elapsed = uptime * 1e-6f;
   ctx_->invalidate = 0;
 }
 
+void Diagnostics::setColor(double rgb[3], double hsv[3], double y) {
+  ctx_->color.r = rgb[0];
+  ctx_->color.g = rgb[1];
+  ctx_->color.b = rgb[2];
+  ctx_->color.h = hsv[0];
+  ctx_->color.s = hsv[1];
+  ctx_->color.v = hsv[2];
+  ctx_->color.y = y;
+  ++ctx_->invalidate;
+}
+
+void Diagnostics::setMeasure(double leftWheelCount, double rightWheelCount,
+                             double yaw, double anglVel) {
+  ctx_->left_motor.count = leftWheelCount;
+  ctx_->right_motor.count = rightWheelCount;
+  ctx_->gyro.yaw = yaw;
+  ctx_->gyro.w = anglVel;
+  ++ctx_->invalidate;
+}
+
+void Diagnostics::setDriveParam(double leftPower, double rightPower) {
+  ctx_->left_motor.power = leftPower;
+  ctx_->right_motor.power = rightPower;
+  ++ctx_->invalidate;
+}
+
 void Diagnostics::MonitorColorSensor(ColorSensorMode mode) {
+#if 0
   if (ev3_sensor_get_type(kColorSensorPort) == COLOR_SENSOR) {
     if (mode == kColorSensorModeReflect) {
       ctx_->color.brightness = ev3_color_sensor_get_reflect(kColorSensorPort);
@@ -102,25 +124,31 @@ void Diagnostics::MonitorColorSensor(ColorSensorMode mode) {
       Invalidate();
     }
   }
+#endif
 }
 
 void Diagnostics::MonitorGyroSensor() {
+#if 0
   if (ev3_sensor_get_type(kGyroSensorPort) == GYRO_SENSOR) {
     ctx_->gyro.angle = ev3_gyro_sensor_get_angle(kGyroSensorPort);
     ctx_->gyro.rate = ev3_gyro_sensor_get_rate(kGyroSensorPort);
     Invalidate();
   }
+#endif
 }
 
 void Diagnostics::MonitorSonarSensor() {
+#if 0
   if (ev3_sensor_get_type(kSonarSensorPort) == ULTRASONIC_SENSOR) {
     ctx_->ultrasonic.distance =
         ev3_ultrasonic_sensor_get_distance(kSonarSensorPort);
     Invalidate();
   }
+#endif
 }
 
 void Diagnostics::MonitorMotors() {
+#if 0
   if (ev3_motor_get_type(kLeftMotorPort) == LARGE_MOTOR) {
     ctx_->left_motor.count = ev3_motor_get_counts(kLeftMotorPort);
     ctx_->left_motor.power = ev3_motor_get_power(kLeftMotorPort);
@@ -131,4 +159,5 @@ void Diagnostics::MonitorMotors() {
     ctx_->right_motor.power = ev3_motor_get_power(kRightMotorPort);
     Invalidate();
   }
+#endif
 }

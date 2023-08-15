@@ -18,9 +18,13 @@ public:
   Diagnostics();
   ~Diagnostics();
 
-  void init(ColorSensorMode mode);
-
   void update(uint32_t uptime);
+
+  void setColor(double rgb[3], double hsv[3], double y);
+  void setMeasure(double leftWheelCount, double rightWheelCount,
+                  double yaw, double anglVel);
+
+  void setDriveParam(double leftPower, double rightPower);
 
   void MonitorColorSensor(ColorSensorMode mode);
   void MonitorGyroSensor();
@@ -30,13 +34,11 @@ public:
   void Commit();
 
 private:
-  struct Context;
-  Context *ctx_;
-
-  void Invalidate();
-
   Diagnostics(const Diagnostics&);
   Diagnostics& operator=(const Diagnostics&);
+
+  struct Context;
+  Context *ctx_;
 };
 
 #endif // EV3_MONITOR_DIAGNOSTICS_H_
