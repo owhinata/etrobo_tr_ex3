@@ -16,7 +16,7 @@ static const double LEFT_EDGE   = -1.0;     // 右エッジ
 static const double WHITE_BRIGHTNESS  = 140.0;      // カラーセンサの輝度設定用
 static const double BLACK_BRIGHTNESS  = 10.0;      // カラーセンサの輝度設定用
 static const double STEERING_COEF  = 0.3;      // ステアリング操舵量の係数
-static const double DIFFERENTIAL_COEF = 15;   // D制御の係数
+static const double DIFFERENTIAL_COEF = 0.08;   // D制御の係数
 static const double BASE_SPEED  = 30.0;      // 走行標準スピード
 
 /**
@@ -88,6 +88,14 @@ double LineWalker::steeringAmountCalculation(double brightness) {
     double targetBrightness;  // 目標輝度値
     double diffBrightness;    // 目標輝度との差分値
     double steeringAmount;    // ステアリング操舵量
+    
+    uint32_t now = getUptime();    // 起動時間取得
+    if (!mPrevTime) mPrevTime = now;
+    uint32_t duration_us = now - mPrevTime;   // 処理周期を計算
+    if (duration_us == 0) duration_us = 10000; // ０除算回避用
+    mPrevTime = now;
+    double duration = float(duration_us) * 1e-6;   // usをsecに変換(一度floatにキャストする必要有)
+    printf("duration: %f\n", duration);
 
     /* 目標輝度値の計算 */
     targetBrightness = (mWhilteBrightness - mBlackBrightness) / 2;
@@ -96,7 +104,7 @@ double LineWalker::steeringAmountCalculation(double brightness) {
     diffBrightness = brightness - targetBrightness;
 
     /* ステアリング操舵量を計算 */
-    steeringAmount = diffBrightness * mSteeringCoef + mDifferentialCoef * (diffBrightness - mPrevDiffBrightness);
+    steeringAmount = diffBrightness * mSteeringCoef + mDifferentialCoef * (diffBrightness - mPrevDiffBrightness) / duration;
     printf(" meas: %f tgt: %f steer: %f difdif: %f\n",
             brightness, targetBrightness, steeringAmount, diffBrightness-mPrevDiffBrightness);
 
