@@ -24,3 +24,7 @@ void Walker::setDriveParam(int leftPWM, int rightPWM) {
 double Walker::getBrightness() const {
   return mDriver->getBrightness();
 }
+
+uint32_t Walker::getUptime() const {
+  return mDriver->getUptime();
+}
