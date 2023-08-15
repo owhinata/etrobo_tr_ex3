@@ -46,7 +46,7 @@ Diagnostics::Diagnostics() : ctx_(new Context) {
 #ifdef MAKE_RASPIKE
   time_t now = time(0);
   strftime(ctx_->key, sizeof(ctx_->key), "\"EtRobo %F %T\"", localtime(&now));
-  strftime(file, sizeof(file), "EtRobo_%F_%T.csv", localtime(&now));
+  strftime(file, sizeof(file), "EtRobo_%F_%H.%M.%S.csv", localtime(&now));
 #else
   snprintf(ctx_->key, sizeof(ctx_->key), "%s", "\"EtRobo\"");
   snprintf(file, sizeof(file), "%s.csv", "EtRobo");
