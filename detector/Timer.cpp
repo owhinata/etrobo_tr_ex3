@@ -3,7 +3,7 @@
  *  Copyright (c) 2023 Emtechs Inc.
  *****************************************************************************/
 
-#include "TImer.h"
+#include "Timer.h"
 
 #include <stdio.h>
 
