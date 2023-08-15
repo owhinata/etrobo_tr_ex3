@@ -78,7 +78,7 @@ void LineMonitor::update() {
 
     y = 0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b;
 
-    double _rgb[] = { float(rgb.r), float(rgb.g), float(rgb.r) };
+    double _rgb[] = { float(rgb.r), float(rgb.g), float(rgb.b) };
     double _hsv[] = { hsv.h, hsv.s, hsv.v };
     mDiag->setColor(_rgb, _hsv, y);
 }
