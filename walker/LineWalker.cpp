@@ -46,6 +46,9 @@ void LineWalker::reset(const ScenarioParams& params) {
       mWhilteBrightness = GET("white", double, WHITE_BRIGHTNESS);
       mBlackBrightness = GET("black", double, BLACK_BRIGHTNESS);
       mSteeringCoef = GET("kp", double, STEERING_COEF);
+      mDifferentialCoef = GET("kd", double, DIFFERENTIAL_COEF);
+      mPrevDiffBrightness = 50.0;
+      mPrevTime = getUptime();
       mBaseSpeed = GET("speed", double, BASE_SPEED);
       printf("  edge:  %f\n"
              "  white: %f\n"
@@ -88,14 +91,13 @@ double LineWalker::steeringAmountCalculation(double brightness) {
     double targetBrightness;  // 目標輝度値
     double diffBrightness;    // 目標輝度との差分値
     double steeringAmount;    // ステアリング操舵量
+    double p, i, d;           // PIDの各計算値
     
     uint32_t now = getUptime();    // 起動時間取得
-    if (!mPrevTime) mPrevTime = now;
     uint32_t duration_us = now - mPrevTime;   // 処理周期を計算
-    if (duration_us == 0) duration_us = 10000; // ０除算回避用
     mPrevTime = now;
     double duration = float(duration_us) * 1e-6;   // usをsecに変換(一度floatにキャストする必要有)
-    printf("duration: %f\n", duration);
+    // printf("duration: %f\n", duration);
 
     /* 目標輝度値の計算 */
     targetBrightness = (mWhilteBrightness - mBlackBrightness) / 2;
@@ -103,10 +105,17 @@ double LineWalker::steeringAmountCalculation(double brightness) {
     /* 目標輝度値と反射光の強さの差分を計算 */
     diffBrightness = brightness - targetBrightness;
 
+    p = diffBrightness * mSteeringCoef;
+    if (duration_us == 0) {
+        d = 0;
+    } else {
+        d = mDifferentialCoef * (diffBrightness - mPrevDiffBrightness) / duration;
+    }
+
     /* ステアリング操舵量を計算 */
-    steeringAmount = diffBrightness * mSteeringCoef + mDifferentialCoef * (diffBrightness - mPrevDiffBrightness) / duration;
-    printf(" meas: %f tgt: %f steer: %f difdif: %f\n",
-            brightness, targetBrightness, steeringAmount, diffBrightness-mPrevDiffBrightness);
+    steeringAmount = p + d;
+    // printf(" meas: %f tgt: %f steer: %f difdif: %f\n",
+    //         brightness, targetBrightness, steeringAmount, diffBrightness-mPrevDiffBrightness);
 
     /* 今回の差分を格納 */
     mPrevDiffBrightness = diffBrightness;
