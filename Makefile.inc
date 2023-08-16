@@ -7,6 +7,7 @@ APPL_CXXOBJS += \
 	Monitor.o \
 	Uptime.o \
 	LineMonitor.o \
+	PoseEstimator.o \
 	Detector.o \
 	Starter.o \
 	Timer.o \
