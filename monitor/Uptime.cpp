@@ -4,7 +4,7 @@
  *****************************************************************************/
 
 #include "Uptime.h"
-#include <inttypes.h>
+#include <stdint.h>
 
 class Uptime::Impl {
   ev3api::Clock& clock;
@@ -22,10 +22,10 @@ public:
 
   void update() {
     now = clock.now();
-    diag->update(uint32_t(now - start));
+    diag->update(float(now - start) * 1e-6f);
   }
 
-  uint32_t getUptime() const { return uint32_t(now - start); }
+  double getUptime() const { return float(now - start) * 1e-6f; }
 };
 
 Uptime::Uptime(ev3api::Clock& clock, Diagnostics* diag)
@@ -39,4 +39,4 @@ void Uptime::init(const ScenarioParams& params) { mImpl->init(); }
 
 void Uptime::update() { mImpl->update(); }
 
-uint32_t Uptime::getUptime() const { return mImpl->getUptime(); }
+double Uptime::getUptime() const { return mImpl->getUptime(); }

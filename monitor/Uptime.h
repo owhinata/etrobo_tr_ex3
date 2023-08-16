@@ -6,8 +6,6 @@
 #ifndef EV3_MONITOR_UPTIME_H_
 #define EV3_MONITOR_UPTIME_H_
 
-#include <stdint.h>
-
 #include "Monitor.h"
 
 #include "Clock.h"
@@ -25,7 +23,7 @@ public:
 
   virtual const char* getClassName() const;
 
-  uint32_t getUptime() const;
+  double getUptime() const;
 
 private:
   Uptime(const Uptime&);

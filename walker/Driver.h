@@ -25,7 +25,7 @@ public:
 
   double getBrightness() const;
 
-  uint32_t getUptime() const;
+  double getUptime() const;
 
 private:
   Uptime* mUptime;

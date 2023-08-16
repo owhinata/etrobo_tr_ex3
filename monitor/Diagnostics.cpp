@@ -78,8 +78,8 @@ void Diagnostics::Commit() {
   ctx_->invalidate = 0;
 }
 
-void Diagnostics::update(uint32_t uptime) {
-  ctx_->elapsed = uptime * 1e-6f;
+void Diagnostics::update(double uptime) {
+  ctx_->elapsed = uptime;
   ctx_->invalidate = 0;
 }
 
