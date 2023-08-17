@@ -32,7 +32,7 @@ private:
     double mSteeringCoef;
     double mDifferentialCoef;
     double mPrevDiffBrightness;
-    uint32_t mPrevTime;
+    double mPrevTime;
     double mBaseSpeed;
 };
 

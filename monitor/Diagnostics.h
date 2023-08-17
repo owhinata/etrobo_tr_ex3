@@ -18,7 +18,7 @@ public:
   Diagnostics();
   ~Diagnostics();
 
-  void update(uint32_t uptime);
+  void update(double uptime);
 
   void setColor(double rgb[3], double hsv[3], double y);
   void setMeasure(double leftWheelCount, double rightWheelCount,

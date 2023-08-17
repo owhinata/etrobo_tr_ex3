@@ -25,6 +25,6 @@ double Walker::getBrightness() const {
   return mDriver->getBrightness();
 }
 
-uint32_t Walker::getUptime() const {
+double Walker::getUptime() const {
   return mDriver->getUptime();
 }

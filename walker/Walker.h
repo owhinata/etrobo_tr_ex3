@@ -6,8 +6,6 @@
 #ifndef EV3_WALKER_WALKER_H_
 #define EV3_WALKER_WALKER_H_
 
-#include <stdint.h>
-
 #include "Driver.h"
 #include "ScenarioParams.h"
 
@@ -29,7 +27,7 @@ protected:
   void stop();
   void setDriveParam(int leftPWM, int rightPWM);
   double getBrightness() const;
-  uint32_t getUptime() const;
+  double getUptime() const;
 
 private:
   Driver* mDriver;

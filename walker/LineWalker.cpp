@@ -54,9 +54,10 @@ void LineWalker::reset(const ScenarioParams& params) {
              "  white: %f\n"
              "  black: %f\n"
              "  kp:    %f\n"
+             "  kd:    %f\n"
              "  speed: %f\n",
              mEdge, mWhilteBrightness, mBlackBrightness,
-             mSteeringCoef, mBaseSpeed);
+             mSteeringCoef, mDifferentialCoef, mBaseSpeed);
 }
 
 /**
@@ -93,10 +94,9 @@ double LineWalker::steeringAmountCalculation(double brightness) {
     double steeringAmount;    // ステアリング操舵量
     double p, i, d;           // PIDの各計算値
     
-    uint32_t now = getUptime();    // 起動時間取得
-    uint32_t duration_us = now - mPrevTime;   // 処理周期を計算
+    double now = getUptime();    // 起動時間取得
+    double duration = now - mPrevTime;   // 処理周期を計算
     mPrevTime = now;
-    double duration = float(duration_us) * 1e-6;   // usをsecに変換(一度floatにキャストする必要有)
     // printf("duration: %f\n", duration);
 
     /* 目標輝度値の計算 */
@@ -106,7 +106,7 @@ double LineWalker::steeringAmountCalculation(double brightness) {
     diffBrightness = brightness - targetBrightness;
 
     p = diffBrightness * mSteeringCoef;
-    if (duration_us == 0) {
+    if (duration == 0) {
         d = 0;
     } else {
         d = mDifferentialCoef * (diffBrightness - mPrevDiffBrightness) / duration;
