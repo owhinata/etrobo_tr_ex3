@@ -9,8 +9,8 @@
 
 class Timer::Impl {
   Uptime* time;
-  uint32_t start;
-  float timeout;
+  double start;
+  double timeout;
 
 public:
   explicit Impl(Uptime* _time) : time(_time) {}
@@ -18,16 +18,14 @@ public:
   void reset(const ScenarioParams& params) {
     #define GET(a, b, c) params.get(a, &val) ? b(val) : c
     double val;
-    timeout = GET("timeout", float, 0.0f);
+    timeout = GET("timeout", double, 0.0);
     start = time->getUptime();
+    printf("  start:   %f\n", start);
     printf("  timeout: %f\n", timeout);
-    // printf("  start: %u\n", start);
-    // printf("  float: %f\n", float(start) * 1e-6);
-    // printf("  double: %f\n", double(start) * 1e-6);
   }
 
   bool on() {
-    return float(time->getUptime() - start) * 1e-6 >= timeout;
+    return time->getUptime() - start >= timeout;
   }
 };
 

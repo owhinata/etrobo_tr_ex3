@@ -34,6 +34,6 @@ double Driver::getBrightness() const {
   return mLineMonitor->getBrightness();
 }
 
-uint32_t Driver::getUptime() const {
+double Driver::getUptime() const {
   return mUptime->getUptime();
 }
