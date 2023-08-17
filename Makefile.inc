@@ -12,6 +12,7 @@ APPL_CXXOBJS += \
 	Starter.o \
 	Timer.o \
 	ColorDetector.o \
+	SwitchEdgeDetector.o \
 	Walker.o \
 	StayInPlace.o \
 	LineWalker.o \
