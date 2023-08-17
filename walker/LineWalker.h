@@ -30,6 +30,9 @@ private:
     double mWhilteBrightness;
     double mBlackBrightness;
     double mSteeringCoef;
+    double mDifferentialCoef;
+    double mPrevDiffBrightness;
+    uint32_t mPrevTime;
     double mBaseSpeed;
 };
 
