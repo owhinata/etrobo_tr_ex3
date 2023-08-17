@@ -10,44 +10,56 @@
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 50.0 },
           "detector": { "class": "Timer", "params": { "timeout": 1.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "speed": 92.0 },
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "kd": 0.08, "speed": 92.0 },
           "detector": { "class": "Timer", "params": { "timeout": 7.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 50.0 },
           "detector": { "class": "Timer", "params": { "timeout": 3.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "speed": 92.0 },
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "kd": 0.08, "speed": 92.0 },
           "detector": { "class": "Timer", "params": { "timeout": 3.5 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
-          "detector": { "class": "ColorDetector", "params": { "hue": 204.0, "saturation": 0.50, "count": 5 } }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 50.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 2.5 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 140.0, "black": 0.0, "kp": 0.5, "speed": 30.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 3.0 } }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.2, "kd": 0.02, "speed": 50.0 },
+          "detector": { "class": "ColorAmplification", "params": { "hue": 204.0, "count": 3, "amplification": 4.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "speed": 92.0 },
-          "detector": { "class": "ColorDetector", "params": { "hue": -20.0, "saturation": 0.36, "count": 5 } }
+          "params": { "edge": 1.0, "white": 124.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "speed": 45.0 },
+          "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "speed": 50.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 0.6 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "kd": 0.08, "speed": 92.0 },
+          "detector": { "class": "ColorDetector", "params": { "hue": 0.0, "saturation": 0.36, "count": 3 } }
         },
         {
           "class": "StayInPlace"
         }
       ]
     },
+
+
     {
       "name": "L-course",
       "scenes": [
@@ -57,148 +69,183 @@
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 50.0 },
           "detector": { "class": "Timer", "params": { "timeout": 1.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.24, "speed": 92.0 },
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "kd": 0.08, "speed": 92.0 },
           "detector": { "class": "Timer", "params": { "timeout": 7.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 50.0 },
           "detector": { "class": "Timer", "params": { "timeout": 3.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.24, "speed": 92.0 },
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "kd": 0.08, "speed": 92.0 },
           "detector": { "class": "Timer", "params": { "timeout": 3.5 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 50.0 },
-          "detector": { "class": "ColorDetector", "params": { "hue": 150.0, "saturation": 0.5, "count": 5 } }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 50.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 2.5 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "kd": 0.0, "speed": 30.0 },
-          "detector": { "class": "SwitchEdgeDetector" }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.2, "kd": 0.02, "speed": 50.0 },
+          "detector": { "class": "ColorAmplification", "params": { "hue": 204.0, "count": 3, "amplification": 3.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 0.0, "black": 0.0, "kp": 0.5, "kd": 0.0, "speed": 25.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 0.2 } }
+          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.3, "kd": 0.02, "speed": 30.0 },
+          "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.0, "speed": 30.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 1 } }
+          "params": { "edge": -1.0, "white": 124.0, "black": 0.0, "kp": 0.8, "kd": 0.08, "speed": 20.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 0.4 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 60.0 },
+          "params": { "edge": -1.0, "white": 124.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "speed": 45.0 },
+          "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": -1.0, "white": 0.0, "black": 0.0, "kp": 0.1, "kd": 0.0, "speed": 40.0 },
+          "detector": { "class": "ColoredToWhite", "params": { "amplification": 3.0, "count": 3 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 45.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 0.4 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 60.0 },
           "detector": { "class": "Timer", "params": { "timeout": 4.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 40.0 },
-          "detector": { "class": "ColorDetector", "params": { "hue": 150.0, "saturation": 0.5, "count": 5 } }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.2, "kd": 0.02, "speed": 40.0 },
+          "detector": { "class": "ColorAmplification", "params": { "hue": 204.0, "count": 3, "amplification": 3.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "kd": 0.0, "speed": 30.0 },
-          "detector": { "class": "SwitchEdgeDetector" }
+          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.3, "kd": 0.02, "speed": 30.0 },
+          "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 160.0, "black": 0.0, "kp": 0.5, "kd": 0.0, "speed": 35.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 1.0 } }
+          "params": { "edge": -1.0, "white": 124.0, "black": 0.0, "kp": 0.8, "kd": 0.08, "speed": 20.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 0.4 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 120.0, "black": 0.0, "kp": 0.5, "kd": 0.0, "speed": 40.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 2.0 } }
+          "params": { "edge": -1.0, "white": 124.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "speed": 45.0 },
+          "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 60.0 },
-          "detector": { "class": "ColorDetector", "params": { "hue": 150.0, "saturation": 0.5, "count": 5 } }
+          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 60.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 8.5 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 140.0, "black": 0.0, "kp": 0.5, "kd": 0.0, "speed": 40.0 },
-          "detector": { "class": "SwitchEdgeDetector", "params": { "mode": 1 } }
+          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.2, "kd": 0.02, "speed": 55.0 },
+          "detector": { "class": "ColorAmplification", "params": { "hue": 204.0, "count": 5, "amplification": 3.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "kd": 0.0, "speed": 30.0 },
-          "detector": { "class": "SwitchEdgeDetector", "params": { "mode": 0 } }
+          "params": { "edge": -1.0, "white": 124.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "speed": 50.0 },
+          "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 35.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 2.0 } }
+          "params": { "edge": -1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "kd": 0.0, "speed": 45.0 },
+          "detector": { "class": "ColoredToWhite", "params": { "amplification": 3.0, "count": 3 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 40.0 },
-          "detector": { "class": "ColorDetector", "params": { "hue": 150.0, "saturation": 0.5, "count": 5 } }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 40.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 7.8 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 140.0, "black": 0.0, "kp": 0.5, "speed": 40.0 },
-          "detector": { "class": "SwitchEdgeDetector", "params": { "mode": 1 } }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.2, "kd": 0.02, "speed": 35.0 },
+          "detector": { "class": "ColorAmplification", "params": { "hue": 204.0, "count": 5, "amplification": 24.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "speed": 30.0 },
-          "detector": { "class": "SwitchEdgeDetector", "params": { "mode": 0 } }
+          "params": { "edge": 1.0, "white": 124.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "speed": 40.0 },
+          "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 40.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 1.2 } }
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.0, "speed": 35.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 0.2 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.00001, "kd": 0.0, "speed": 30.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 1.2 } }
+          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.0, "kd": 0.0, "speed": 40.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 1.6 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 10.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 2.4 } }
+          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.10, "kd": 0.0, "speed": 40.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 1.6 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 60.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 3.6 } }
+          "params": { "edge": 1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "kd": 0.0, "speed": 40.0 },
+          "detector": { "class": "ColoredToWhite", "params": { "amplification": 3.0, "count": 3 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 40.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 3.0 } }
+          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.8, "kd": 0.08, "speed": 40.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 1 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 40.0 },
-          "detector": { "class": "ColorDetector", "params": { "hue": 150.0, "saturation": 0.5, "count": 5 } }
+          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 60.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 3.4 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": -1.0, "white": 0.0, "black": 0.0, "kp": 0.2, "speed": 30.0 },
-          "detector": { "class": "SwitchEdgeDetector" }
+          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 40.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 2.8 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 35.0 },
-          "detector": { "class": "Timer", "params": { "timeout": 2.0 } }
+          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.2, "kd": 0.02, "speed": 40.0 },
+          "detector": { "class": "ColorAmplification", "params": { "hue": 204.0, "count": 3, "amplification": 3.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "speed": 60.0 },
-          "detector": { "class": "ColorDetector", "params": { "hue": -20.0, "saturation": 0.36, "count": 5 } }
+          "params": { "edge": -1.0, "white": 0.0, "black": 0.0, "kp": 0.3, "kd": 0.02, "speed": 30.0 },
+          "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 124.0, "black": 0.0, "kp": 0.8, "kd": 0.08, "speed": 40.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 0.4 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 124.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "speed": 45.0 },
+          "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "speed": 50.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 0.6 } }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "kd": 0.08, "speed": 92.0 },
+          "detector": { "class": "ColorDetector", "params": { "hue": 0.0, "saturation": 0.36, "count": 3 } }
         },
         {
           "class": "StayInPlace"
@@ -223,8 +270,9 @@
     {
       "class": "LineMonitor",
       "params": {
-        "saturated": 0.36,
-        "colored_count": 5
+        "rgain": 0.8875,
+        "ggain": 0.90625,
+        "bgain": 0.625
       }
     }
   ]

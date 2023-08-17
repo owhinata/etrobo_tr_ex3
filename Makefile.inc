@@ -12,6 +12,9 @@ APPL_CXXOBJS += \
 	Starter.o \
 	Timer.o \
 	ColorDetector.o \
+	ColorAmplification.o \
+	ExitColoredArea.o \
+	ColoredToWhite.o \
 	SwitchEdgeDetector.o \
 	Walker.o \
 	StayInPlace.o \

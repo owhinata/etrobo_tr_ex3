@@ -26,6 +26,8 @@ public:
 
   virtual ~LineMonitor();
 
+  virtual void init(const ScenarioParams& params);
+
   virtual void update();
 
   virtual const char* getClassName() const;

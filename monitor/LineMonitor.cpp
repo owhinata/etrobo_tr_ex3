@@ -10,10 +10,11 @@
 #include "LineMonitor.h"
 
 struct LineMonitor::Context {
-    rgb_raw_t rgb;
-    hsv_raw_t hsv;
+    double rgb[3];
+    double hsv[3];
     double y;
-    Context() : rgb(), hsv(), y() {}
+    double gain[3];
+    Context() : rgb(), hsv(), y(), gain() {}
 };
 
 LineMonitor::LineMonitor(const ev3api::ColorSensor& colorSensor,
@@ -25,64 +26,90 @@ LineMonitor::~LineMonitor() { delete mContext; }
 
 const char* LineMonitor::getClassName() const { return "LineMonitor"; }
 
-static uint16_t max(const rgb_raw_t& rgb) {
-    if (rgb.r >= rgb.g && rgb.r >= rgb.b) {
-        return rgb.r;
-    } else if (rgb.g >= rgb.b && rgb.g >= rgb.r) {
-        return rgb.g;
-    } else if (rgb.b >= rgb.r && rgb.b >= rgb.g) {
-        return rgb.b;
+void LineMonitor::init(const ScenarioParams& params) {
+    #define GET(a, b, c) params.get(a, &val) ? b(val) : c
+    double val;
+    double* gain = mContext->gain;
+    gain[0] = GET("rgain", double, 1.0);
+    gain[1] = GET("ggain", double, 1.0);
+    gain[2] = GET("bgain", double, 1.0);
+    printf("LineMonitor\n"
+           "  rgain: %f\n"
+           "  ggain: %f\n"
+           "  bgain: %f\n",
+           gain[0], gain[1], gain[2]);
+}
+
+static double max(const double rgb[3]) {
+    if (rgb[0] >= rgb[1] && rgb[0] >= rgb[2]) {
+        return rgb[0];
+    } else if (rgb[1] >= rgb[2] && rgb[1] >= rgb[0]) {
+        return rgb[1];
+    } else if (rgb[2] >= rgb[0] && rgb[2] >= rgb[1]) {
+        return rgb[2];
     } else {
         return 0;
     }
 }
 
-static uint16_t min(const rgb_raw_t& rgb) {
-    if (rgb.r <= rgb.g && rgb.r <= rgb.b) {
-        return rgb.r;
-    } else if (rgb.g <= rgb.b && rgb.g <= rgb.r) {
-        return rgb.g;
-    } else if (rgb.b <= rgb.r && rgb.b <= rgb.g) {
-        return rgb.b;
+static double min(const double rgb[3]) {
+    if (rgb[0] <= rgb[1] && rgb[0] <= rgb[2]) {
+        return rgb[0];
+    } else if (rgb[1] <= rgb[2] && rgb[1] <= rgb[0]) {
+        return rgb[1];
+    } else if (rgb[2] <= rgb[0] && rgb[2] <= rgb[1]) {
+        return rgb[2];
     } else {
         return 0.0;
     }
 }
 
 void LineMonitor::update() {
-    rgb_raw_t& rgb = mContext->rgb;
-    hsv_raw_t& hsv = mContext->hsv;
+    double* rgb = mContext->rgb;
+    double* hsv = mContext->hsv;
     double& y = mContext->y;
+    const double* gain = mContext->gain;
 
-    mColorSensor.getRawColor(rgb);
+    rgb_raw_t _rgb = {};
+    mColorSensor.getRawColor(_rgb);
 
-    const uint16_t a = max(rgb), b = min(rgb);
+    rgb[0] = float(_rgb.r) * gain[0];
+    rgb[1] = float(_rgb.g) * gain[1];
+    rgb[2] = float(_rgb.b) * gain[2];
+    double a = max(rgb), b = min(rgb);
 
     if (a == b) {
-        hsv.h = 0.0;
-    } else if (rgb.r == a) {
-        hsv.h = 60.0 * double(rgb.g - rgb.b) / double(a - b);
-    } else if (rgb.g == a) {
-        hsv.h = 60.0 * double(rgb.b - rgb.r) / double(a - b) + 120.0;
-    } else if (rgb.b == a) {
-        hsv.h = 240.0 * double(rgb.r - rgb.g) / double(a - b) + 240.0;
+        hsv[0] = 0.0;
+    } else if (rgb[0] == a) {
+        hsv[0] = 60.0 * (rgb[1] - rgb[2]) / (a - b);
+    } else if (rgb[1] == a) {
+        hsv[0] = 60.0 * (rgb[2] - rgb[0]) / (a - b) + 120.0;
+    } else if (rgb[2] == a) {
+        hsv[0] = 60.0 * (rgb[0] - rgb[1]) / (a - b) + 240.0;
     } else {
-        hsv.h = 0.0;
+        hsv[0] = 0.0;
     }
     if (a) {
-        hsv.s = double(a - b) / double(a);
+        hsv[1] = (a - b) / a;
     } else {
-        hsv.s = 0;
+        hsv[1] = 0;
     }
-    hsv.v = double(a);
+    hsv[2] = a;
 
-    y = 0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b;
+    y = 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2];
+    // u = -0.169 * rgb[0] - 0.331 * rgb[1] + 0.500 * rgb[2];
+    // v = 0.500 * rgb[0] - 0.419 * rgb[1] - 0.081 * rgb[2];
 
-    double _rgb[] = { float(rgb.r), float(rgb.g), float(rgb.b) };
-    double _hsv[] = { hsv.h, hsv.s, hsv.v };
-    mDiag->setColor(_rgb, _hsv, y);
+    mDiag->setColor(rgb, hsv, y);
 }
 
 double LineMonitor::getBrightness() const { return mContext->y; }
 
-hsv_raw_t LineMonitor::getHsvColor() const { return mContext->hsv; }
+hsv_raw_t LineMonitor::getHsvColor() const {
+    const hsv_raw_t hsv = {
+        .h = mContext->hsv[0],
+        .s = mContext->hsv[1],
+        .v = mContext->hsv[2],
+    };
+    return hsv;
+}
