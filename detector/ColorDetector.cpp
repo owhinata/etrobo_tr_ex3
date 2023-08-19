@@ -37,12 +37,12 @@ public:
 
   bool on() {
     hsv = sensor->getHsvColor();
-    if (hsv.s > saturation && hsv.h > hue - 60 && hsv.h < hue + 60) {
+    if (hsv.h > hue - 30 && hsv.h < hue + 30) {
       ++detected;
     } else {
       detected = 0;
     }
-    return detected >= count;
+    return detected >= count && hsv.s > saturation;
   }
 };
 

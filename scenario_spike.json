@@ -1,0 +1,52 @@
+{
+  "no": 0,
+  "courses": [
+    {
+      "name": "Test-L",
+      "scenes": [
+        {
+          "class": "StayInPlace",
+          "detector": { "class": "Starter" }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 50.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 120.0 } }
+        },
+        {
+          "class": "StayInPlace"
+        }
+      ]
+    },
+
+
+    {
+      "name": "Test-R",
+      "scenes": [
+        {
+          "class": "StayInPlace",
+          "detector": { "class": "Starter" }
+        },
+        {
+          "class": "LineWalker",
+          "params": { "edge": -1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "speed": 50.0 },
+          "detector": { "class": "Timer", "params": { "timeout": 120.0 } }
+        },
+        {
+          "class": "StayInPlace"
+        }
+      ]
+    }
+  ],
+
+  "monitors": [
+    {
+      "class": "LineMonitor",
+      "params": {
+        "rgain": 1.0,
+        "ggain": 1.0,
+        "bgain": 1.0
+      }
+    }
+  ]
+}

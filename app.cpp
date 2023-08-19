@@ -23,6 +23,9 @@
 #include "Starter.h"
 #include "Timer.h"
 #include "ColorDetector.h"
+#include "ColorAmplification.h"
+#include "ExitColoredArea.h"
+#include "ColoredToWhite.h"
 #include "SwitchEdgeDetector.h"
 #include "StayInPlace.h"
 #include "LineWalker.h"
@@ -65,6 +68,9 @@ static PoseEstimator   *gPoseEstimator;
 static Starter         *gStarter;
 static Timer           *gTimer;
 static ColorDetector   *gColorDetector;
+static ColorAmplification *gColorAmplification;
+static ExitColoredArea *gExitColoredArea;
+static ColoredToWhite  *gColoredToWhite;
 static SwitchEdgeDetector *gSwithEdgeDetector;
 
 static Driver          *gDriver;
@@ -100,12 +106,20 @@ static void user_system_create() {
     gStarter = new Starter(gTouchSensor);
     gTimer = new Timer(gUptime);
     gColorDetector = new ColorDetector(gLineMonitor);
+    gColorAmplification =
+        new ColorAmplification(gLineMonitor, gUptime, gDiagnostics);
+    gExitColoredArea =
+        new ExitColoredArea(gLineMonitor, gUptime, gDiagnostics);
+    gColoredToWhite = new ColoredToWhite(gLineMonitor, gUptime, gDiagnostics);
     gSwithEdgeDetector = new SwitchEdgeDetector(gLineMonitor);
 
     Detector* detectors[] = {
         gStarter,
         gTimer,
         gColorDetector,
+        gColorAmplification,
+        gExitColoredArea,
+        gColoredToWhite,
         gSwithEdgeDetector,
     };
 
@@ -144,6 +158,9 @@ static void user_system_destroy() {
     delete gStayInPlace;
     delete gDriver;
     delete gSwithEdgeDetector;
+    delete gExitColoredArea;
+    delete gColoredToWhite;
+    delete gColorAmplification;
     delete gColorDetector;
     delete gTimer;
     delete gStarter;
