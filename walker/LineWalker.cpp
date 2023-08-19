@@ -17,7 +17,7 @@ static const double WHITE_BRIGHTNESS  = 140.0;      // カラーセンサの輝�
 static const double BLACK_BRIGHTNESS  = 10.0;      // カラーセンサの輝度設定用
 static const double STEERING_COEF  = 0.3;      // ステアリング操舵量の係数
 static const double DIFFERENTIAL_COEF = 0.08;   // D制御の係数
-static const double INTEGRAL_COEF = 1.2;       // I制御の係数
+static const double INTEGRAL_COEF = 0.25;       // I制御の係数
 static const double BASE_SPEED  = 30.0;      // 走行標準スピード
 
 /**
@@ -113,7 +113,7 @@ double LineWalker::steeringAmountCalculation(double brightness) {
 
     /* 積分を求める */
     mIntegral += (diffBrightness + mPrevDiffBrightness) * duration / 2;
-    // printf("Integral: %f\n", mIntegral);
+    printf("Integral: %f\n", mIntegral);
 
     p = diffBrightness * mSteeringCoef;
     if (duration == 0) {
