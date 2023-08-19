@@ -113,7 +113,7 @@ double LineWalker::steeringAmountCalculation(double brightness) {
 
     /* 積分を求める */
     mIntegral += (diffBrightness + mPrevDiffBrightness) * duration / 2;
-    printf("Integral: %f\n", mIntegral);
+    // printf("Integral: %f\n", mIntegral);
 
     p = diffBrightness * mSteeringCoef;
     if (duration == 0) {
