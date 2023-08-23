@@ -10,11 +10,13 @@
 
 class SampleWalker : public Walker {
 public:
-  SampleWalker(Driver* driver);
+  SampleWalker();
 
   virtual ~SampleWalker();
 
-  virtual void run();
+  virtual bool execute();
+
+  virtual Control get();
 
   virtual const char* getClassName() const;
 };

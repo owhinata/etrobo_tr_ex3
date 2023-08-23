@@ -118,10 +118,8 @@ public:
         }
     }
 
-    void run() {
-        if (mCurrentWalker) {
-            mCurrentWalker->run();
-        }
+    Walker* getCurrentWalker() {
+        return mCurrentWalker;
     }
 
     void goToScene(int index) {
@@ -152,11 +150,11 @@ private:
 };
 
 ScenarioWalker::ScenarioWalker(
-        ScenarioReader* scenario,
+        ScenarioReader* scenario, Driver* driver,
         Monitor* monitors[], int monitorsNum,
         Detector* detectors[], int detectorsNum,
         Walker* walkers[], int walkersNum)
-    : mScenario(scenario), mState(UNDEFINED), mSceneIndex(),
+    : mScenario(scenario), mDriver(driver), mState(UNDEFINED), mSceneIndex(),
       mMonitors(new MonitorsImpl(monitors, monitorsNum, mScenario)),
       mDetectors(new DetectorsImpl(detectors, detectorsNum, mScenario)),
       mWalkers(new WalkersImpl(walkers, walkersNum, mScenario)) {}
@@ -186,7 +184,7 @@ void ScenarioWalker::execScenarioWalking() {
         mWalkers->goToScene(mSceneIndex);
         mDetectors->goToScene(mSceneIndex);
     }
-    mWalkers->run();
+    mDriver->run(mWalkers->getCurrentWalker());
 }
 
 void ScenarioWalker::run() {

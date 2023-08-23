@@ -5,16 +5,32 @@
 
 #include "Driver.h"
 
-Driver::Driver(Uptime* uptime,
-               LineMonitor* lineMonitor,
-               ev3api::Motor& leftWheel,
+#include <math.h>
+
+Driver::Driver(ev3api::Motor& leftWheel,
                ev3api::Motor& rightWheel,
                Diagnostics* diag)
-  : mUptime(uptime),
-    mLineMonitor(lineMonitor),
-    mLeftWheel(leftWheel),
+  : mLeftWheel(leftWheel),
     mRightWheel(rightWheel),
     mDiag(diag) {}
+
+void Driver::run(Walker* walker) {
+  if (!walker || !walker->execute()) {
+    stop();
+    return;
+  }
+  Control ctrl = walker->get();
+
+  // 左右モータ駆動パワーの計算 (steering > 0 で左に曲がる)
+  int leftMotorPower = (int)round(ctrl.speed - ctrl.steering);
+  int rightMotorPower = (int)round(ctrl.speed + ctrl.steering);
+  // printf(" l: %f r: %f",
+  //        ctrl.speed + ctrl.steering,
+  //        ctrl.speed - ctrl.steering);
+  // printf(" left: %d right: %d\n", leftMotorPower, rightMotorPower);
+
+  setDriveParam(leftMotorPower, rightMotorPower);
+}
 
 void Driver::stop() {
   mLeftWheel.setPWM(0);
@@ -28,12 +44,4 @@ void Driver::setDriveParam(int leftPWM, int rightPWM) {
   mLeftWheel.setPWM(leftPWM);
   mRightWheel.setPWM(rightPWM);
   mDiag->setDriveParam(float(leftPWM), float(rightPWM));
-}
-
-double Driver::getBrightness() const {
-  return mLineMonitor->getBrightness();
-}
-
-double Driver::getUptime() const {
-  return mUptime->getUptime();
 }

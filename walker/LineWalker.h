@@ -10,21 +10,26 @@
 #define EV3_WALKER_LINE_WALKER_H_
 
 #include "Walker.h"
+#include "LineMonitor.h"
+#include "Uptime.h"
 
 class LineWalker : public Walker {
 public:
-    LineWalker(Driver* driver);
+    LineWalker(Uptime* uptime, LineMonitor* lineMonitor);
 
     virtual ~LineWalker();
 
     virtual const char* getClassName() const;
 
     virtual void reset(const ScenarioParams& params);
+ 
+    virtual bool execute();
 
-    virtual void run();
+    virtual Control get();
 
 private:
-    double steeringAmountCalculation(double brightness);
+    Uptime* mUptime;
+    LineMonitor* mLineMonitor;
 
     double mEdge;
     double mWhilteBrightness;
@@ -36,6 +41,7 @@ private:
     double mPrevTime;
     double mIntegral;
     double mBaseSpeed;
+    double mSteeringAmount;
 };
 
 #endif  // EV3_WALKER_LINE_WALKER_H_

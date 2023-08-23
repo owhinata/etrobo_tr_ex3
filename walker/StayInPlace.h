@@ -10,14 +10,6 @@
 
 class StayInPlace : public Walker {
 public:
-  StayInPlace(Driver* driver);
-
-  virtual ~StayInPlace();
-
-  virtual void reset(const ScenarioParams& params);
-
-  virtual void run();
-
   virtual const char* getClassName() const;
 };
 

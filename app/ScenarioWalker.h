@@ -14,6 +14,7 @@
 #include "Monitor.h"
 #include "Detector.h"
 #include "Walker.h"
+#include "Driver.h"
 
 class MonitorsImpl;
 class DetectorsImpl;
@@ -21,7 +22,7 @@ class WalkersImpl;
 
 class ScenarioWalker {
 public:
-    ScenarioWalker(ScenarioReader* scenario,
+    ScenarioWalker(ScenarioReader* scenario, Driver* driver,
                    Monitor* monitors[], int monitorsNum,
                    Detector* detectors[], int detectorsNum,
                    Walker* walkers[], int walkerNum);
@@ -35,6 +36,7 @@ private:
     void execScenarioWalking();
 
     ScenarioReader* mScenario;
+    Driver* mDriver;
     int mState;
     int mSceneIndex;
 

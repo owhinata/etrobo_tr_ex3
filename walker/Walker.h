@@ -6,31 +6,29 @@
 #ifndef EV3_WALKER_WALKER_H_
 #define EV3_WALKER_WALKER_H_
 
-#include "Driver.h"
 #include "ScenarioParams.h"
+
+struct Control {
+  double speed;
+  double steering;
+
+  Control();
+  Control(double _speed, double _steering);
+};
 
 class Walker {
 public:
-  Walker(Driver* driver);
-
   virtual ~Walker();
 
   virtual void init();
 
   virtual void reset(const ScenarioParams& params);
 
-  virtual void run() = 0;
+  virtual bool execute();
+
+  virtual Control get();
 
   virtual const char* getClassName() const = 0;
-
-protected:
-  void stop();
-  void setDriveParam(int leftPWM, int rightPWM);
-  double getBrightness() const;
-  double getUptime() const;
-
-private:
-  Driver* mDriver;
 };
 
 #endif  // EV3_UNIT_WALKER_H_
