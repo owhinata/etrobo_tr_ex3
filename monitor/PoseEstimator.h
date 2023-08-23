@@ -21,7 +21,7 @@ public:
 
   virtual void init(const ScenarioParams& params);
 
-  virtual void update();
+  virtual bool update();
 
   virtual const char* getClassName() const;
 

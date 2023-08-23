@@ -39,10 +39,13 @@ public:
         }
     }
 
-    void update() {
+    bool update() {
         for (int i = 0; i < mMonitorsNum; ++i) {
-            mMonitors[i]->update();
+            if (!mMonitors[i]->update()) {
+                return false;
+            }
         }
+        return true;
     }
 
 private:
@@ -177,7 +180,9 @@ void ScenarioWalker::execUndefined() {
 }
 
 void ScenarioWalker::execScenarioWalking() {
-    mMonitors->update();
+    if (!mMonitors->update()) {
+        mDriver->stop();
+    }
     if (mDetectors->isSceneTerminate()) {
         ++mSceneIndex;
         printf("**** Start Scene %d ****\n", mSceneIndex);

@@ -37,6 +37,9 @@ const char* Uptime::getClassName() const { return "Uptime"; }
 
 void Uptime::init(const ScenarioParams& params) { mImpl->init(); }
 
-void Uptime::update() { mImpl->update(); }
+bool Uptime::update() {
+  mImpl->update();
+  return true;
+}
 
 double Uptime::getUptime() const { return mImpl->getUptime(); }
