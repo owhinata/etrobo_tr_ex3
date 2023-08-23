@@ -31,8 +31,10 @@ private:
     double mBlackBrightness;
     double mSteeringCoef;
     double mDifferentialCoef;
+    double mIntegralCoef;
     double mPrevDiffBrightness;
     double mPrevTime;
+    double mIntegral;
     double mBaseSpeed;
 };
 
