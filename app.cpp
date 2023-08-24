@@ -22,6 +22,7 @@
 #include "PoseEstimator.h"
 #include "Starter.h"
 #include "Timer.h"
+#include "Odometer.h"
 #include "ColorDetector.h"
 #include "ColorAmplification.h"
 #include "ExitColoredArea.h"
@@ -67,6 +68,7 @@ static PoseEstimator   *gPoseEstimator;
 
 static Starter         *gStarter;
 static Timer           *gTimer;
+static Odometer        *gOdometer;
 static ColorDetector   *gColorDetector;
 static ColorAmplification *gColorAmplification;
 static ExitColoredArea *gExitColoredArea;
@@ -105,6 +107,7 @@ static void user_system_create() {
 
     gStarter = new Starter(gTouchSensor);
     gTimer = new Timer(gUptime);
+    gOdometer = new Odometer(gPoseEstimator, gDiagnostics);
     gColorDetector = new ColorDetector(gLineMonitor);
     gColorAmplification =
         new ColorAmplification(gLineMonitor, gUptime, gDiagnostics);
@@ -116,6 +119,7 @@ static void user_system_create() {
     Detector* detectors[] = {
         gStarter,
         gTimer,
+        gOdometer,
         gColorDetector,
         gColorAmplification,
         gExitColoredArea,
@@ -161,6 +165,7 @@ static void user_system_destroy() {
     delete gColoredToWhite;
     delete gColorAmplification;
     delete gColorDetector;
+    delete gOdometer;
     delete gTimer;
     delete gStarter;
     delete gPoseEstimator;

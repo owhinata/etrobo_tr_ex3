@@ -12,6 +12,12 @@
 #include "GyroSensor.h"
 #include "Diagnostics.h"
 
+struct Pose {
+  double px;
+  double py;
+  double rz;
+};
+
 class PoseEstimator : public Monitor {
 public:
   PoseEstimator(ev3api::Motor& left, ev3api::Motor& right,
@@ -24,6 +30,10 @@ public:
   virtual bool update();
 
   virtual const char* getClassName() const;
+
+  Pose getPose() const;
+
+  double getDistance() const;
 
 private:
   PoseEstimator(const PoseEstimator&);

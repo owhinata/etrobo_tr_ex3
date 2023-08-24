@@ -22,7 +22,8 @@ public:
 
   void setColor(double rgb[3], double hsv[3], double y);
   void setMeasure(double leftWheelCount, double rightWheelCount,
-                  double yaw, double anglVel);
+                  double yaw, double anglVel,
+                  double px, double py, double rz, double distance);
 
   void setDriveParam(double leftPower, double rightPower);
 

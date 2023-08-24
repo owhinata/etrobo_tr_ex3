@@ -33,6 +33,9 @@ struct Diagnostics::Context {
   struct {
     double count, power;
   } left_motor, right_motor;
+  struct {
+    double px, py, rz, distance;
+  } pose;
   int invalidate;
   double elapsed;
   SYSTIM start;
@@ -53,7 +56,7 @@ Diagnostics::Diagnostics() : ctx_(new Context) {
 #endif
   ctx_->fp = fopen(file, "w");
   if (ctx_->fp) {
-    fprintf(ctx_->fp, ",r,g,b,h,s,v,y,foward,turn,w,yaw,lc,rc\n");
+    fprintf(ctx_->fp, ",distance,r,g,b,h,s,v,y,foward,turn,w,yaw,lc,rc,px,py,rz\n");
   }
   get_tim(&ctx_->start);
 }
@@ -67,13 +70,15 @@ Diagnostics::~Diagnostics() {
 
 void Diagnostics::Commit() {
   if (ctx_->fp && ctx_->invalidate) {
-    fprintf(ctx_->fp, "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",
-            ctx_->elapsed, ctx_->color.r, ctx_->color.g, ctx_->color.b,
+    fprintf(ctx_->fp, "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",
+            ctx_->elapsed, ctx_->pose.distance,
+            ctx_->color.r, ctx_->color.g, ctx_->color.b,
             ctx_->color.h, ctx_->color.s, ctx_->color.v, ctx_->color.y,
             (ctx_->right_motor.power + ctx_->left_motor.power) / 2.0,
             ctx_->right_motor.power - ctx_->left_motor.power,
             ctx_->gyro.w, ctx_->gyro.yaw,
-            ctx_->left_motor.count, ctx_->right_motor.count);
+            ctx_->left_motor.count, ctx_->right_motor.count,
+            ctx_->pose.px, ctx_->pose.py, ctx_->pose.rz);
   }
   ctx_->invalidate = 0;
 }
@@ -95,11 +100,16 @@ void Diagnostics::setColor(double rgb[3], double hsv[3], double y) {
 }
 
 void Diagnostics::setMeasure(double leftWheelCount, double rightWheelCount,
-                             double yaw, double anglVel) {
+                             double yaw, double anglVel,
+                             double px, double py, double rz, double distance) {
   ctx_->left_motor.count = leftWheelCount;
   ctx_->right_motor.count = rightWheelCount;
   ctx_->gyro.yaw = yaw;
   ctx_->gyro.w = anglVel;
+  ctx_->pose.px = px;
+  ctx_->pose.py = py;
+  ctx_->pose.rz = rz;
+  ctx_->pose.distance = distance;
   ++ctx_->invalidate;
 }
 
