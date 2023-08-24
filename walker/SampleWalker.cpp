@@ -5,7 +5,7 @@
 
 #include "SampleWalker.h"
 
-SampleWalker::SampleWalker(Driver* driver) : Walker(driver) {}
+SampleWalker::SampleWalker() {}
 
 SampleWalker::~SampleWalker() {}
 
@@ -13,8 +13,8 @@ const char* SampleWalker::getClassName() const {
   return "SampleWalker";
 }
 
-void SampleWalker::run() {
-  double brightness = getBrightness();
-  int left = 30, right = 30;
-  setDriveParam(left, right);
+bool SampleWalker::execute() {
+  return true;
 }
+
+Control SampleWalker::get() { return Control(40, 40); }

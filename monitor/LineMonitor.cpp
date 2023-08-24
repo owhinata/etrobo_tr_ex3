@@ -64,7 +64,7 @@ static double min(const double rgb[3]) {
     }
 }
 
-void LineMonitor::update() {
+bool LineMonitor::update() {
     double* rgb = mContext->rgb;
     double* hsv = mContext->hsv;
     double& y = mContext->y;
@@ -101,6 +101,8 @@ void LineMonitor::update() {
     // v = 0.500 * rgb[0] - 0.419 * rgb[1] - 0.081 * rgb[2];
 
     mDiag->setColor(rgb, hsv, y);
+
+    return true;
 }
 
 double LineMonitor::getBrightness() const { return mContext->y; }

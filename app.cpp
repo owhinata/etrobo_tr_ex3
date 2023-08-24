@@ -123,12 +123,11 @@ static void user_system_create() {
         gSwithEdgeDetector,
     };
 
-    gDriver = new Driver(gUptime, gLineMonitor, gLeftWheel, gRightWheel,
-                         gDiagnostics);
+    gDriver = new Driver(gLeftWheel, gRightWheel, gDiagnostics);
 
-    gStayInPlace = new StayInPlace(gDriver);
-    gLineWalker = new LineWalker(gDriver);
-    gSampleWalker = new SampleWalker(gDriver);
+    gStayInPlace = new StayInPlace();
+    gLineWalker = new LineWalker(gUptime, gLineMonitor);
+    gSampleWalker = new SampleWalker();
 
     Walker* walkers[] = {
         gStayInPlace,
@@ -136,7 +135,7 @@ static void user_system_create() {
         gSampleWalker,
     };
 
-    gScenarioWalker = new ScenarioWalker(gScenarioReader,
+    gScenarioWalker = new ScenarioWalker(gScenarioReader, gDriver,
             monitors, sizeof(monitors) / sizeof(monitors[0]),
             detectors, sizeof(detectors) / sizeof(detectors[0]),
             walkers, sizeof(walkers) / sizeof(walkers[0]));

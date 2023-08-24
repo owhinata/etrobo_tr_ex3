@@ -22,12 +22,13 @@ public:
     gyro.reset();
   }
 
-  void update() {
+  bool update() {
     double lc = float(left.getCount()),
            rc = float(right.getCount()),
            yaw = float(gyro.getAngle()),
            w = float(gyro.getAnglerVelocity());
     diag->setMeasure(lc, rc, yaw, w);
+    return true;
   }
 };
 
@@ -43,4 +44,4 @@ void PoseEstimator::init(const ScenarioParams& params) {
   mImpl->init(params);
 }
 
-void PoseEstimator::update() { mImpl->update(); }
+bool PoseEstimator::update() { return mImpl->update(); }

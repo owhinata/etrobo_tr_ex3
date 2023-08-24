@@ -39,10 +39,13 @@ public:
         }
     }
 
-    void update() {
+    bool update() {
         for (int i = 0; i < mMonitorsNum; ++i) {
-            mMonitors[i]->update();
+            if (!mMonitors[i]->update()) {
+                return false;
+            }
         }
+        return true;
     }
 
 private:
@@ -118,10 +121,8 @@ public:
         }
     }
 
-    void run() {
-        if (mCurrentWalker) {
-            mCurrentWalker->run();
-        }
+    Walker* getCurrentWalker() {
+        return mCurrentWalker;
     }
 
     void goToScene(int index) {
@@ -152,11 +153,11 @@ private:
 };
 
 ScenarioWalker::ScenarioWalker(
-        ScenarioReader* scenario,
+        ScenarioReader* scenario, Driver* driver,
         Monitor* monitors[], int monitorsNum,
         Detector* detectors[], int detectorsNum,
         Walker* walkers[], int walkersNum)
-    : mScenario(scenario), mState(UNDEFINED), mSceneIndex(),
+    : mScenario(scenario), mDriver(driver), mState(UNDEFINED), mSceneIndex(),
       mMonitors(new MonitorsImpl(monitors, monitorsNum, mScenario)),
       mDetectors(new DetectorsImpl(detectors, detectorsNum, mScenario)),
       mWalkers(new WalkersImpl(walkers, walkersNum, mScenario)) {}
@@ -179,14 +180,16 @@ void ScenarioWalker::execUndefined() {
 }
 
 void ScenarioWalker::execScenarioWalking() {
-    mMonitors->update();
+    if (!mMonitors->update()) {
+        mDriver->stop();
+    }
     if (mDetectors->isSceneTerminate()) {
         ++mSceneIndex;
         printf("**** Start Scene %d ****\n", mSceneIndex);
         mWalkers->goToScene(mSceneIndex);
         mDetectors->goToScene(mSceneIndex);
     }
-    mWalkers->run();
+    mDriver->run(mWalkers->getCurrentWalker());
 }
 
 void ScenarioWalker::run() {

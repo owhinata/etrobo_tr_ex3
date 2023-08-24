@@ -5,7 +5,10 @@
 
 #include "Walker.h"
 
-Walker::Walker(Driver* driver) : mDriver(driver) {}
+Control::Control() : speed(), steering() {}
+
+Control::Control(double _speed, double _steering)
+  : speed(_speed), steering(_steering) {}
 
 Walker::~Walker() {}
 
@@ -13,18 +16,6 @@ void Walker::init() { return; }
 
 void Walker::reset(const ScenarioParams& params) { return; }
 
-void Walker::stop() {
-  mDriver->stop();
-}
+bool Walker::execute() { return false; }
 
-void Walker::setDriveParam(int leftPWM, int rightPWM) {
-  mDriver->setDriveParam(leftPWM, rightPWM);
-}
-
-double Walker::getBrightness() const {
-  return mDriver->getBrightness();
-}
-
-double Walker::getUptime() const {
-  return mDriver->getUptime();
-}
+Control Walker::get() { return Control(); }

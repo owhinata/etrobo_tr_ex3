@@ -8,8 +8,6 @@
 
 #include "LineWalker.h"
 
-#include <math.h>
-
 // 定数宣言
 static const double RIGHT_EDGE  = 1.0;      // 左エッジ
 static const double LEFT_EDGE   = -1.0;     // 右エッジ
@@ -25,8 +23,9 @@ static const double BASE_SPEED  = 30.0;      // 走行標準スピード
  * @param leftWheel  左モータ
  * @param rightWheel 右モータ
  */
-LineWalker::LineWalker(Driver* driver)
-    : Walker(driver),
+LineWalker::LineWalker(Uptime* uptime, LineMonitor* lineMonitor)
+    : mUptime(uptime),
+      mLineMonitor(lineMonitor),
       mEdge(LEFT_EDGE),
       mWhilteBrightness(WHITE_BRIGHTNESS),
       mBlackBrightness(BLACK_BRIGHTNESS),
@@ -34,7 +33,8 @@ LineWalker::LineWalker(Driver* driver)
       mDifferentialCoef(DIFFERENTIAL_COEF),
       mIntegralCoef(INTEGRAL_COEF),
       mPrevDiffBrightness(50.0),
-      mBaseSpeed(BASE_SPEED) {
+      mBaseSpeed(BASE_SPEED),
+      mSteeringAmount(0.0) {
 }
 
 LineWalker::~LineWalker() {}
@@ -51,7 +51,7 @@ void LineWalker::reset(const ScenarioParams& params) {
       mDifferentialCoef = GET("kd", double, DIFFERENTIAL_COEF);
       mIntegralCoef = GET("ki", double, INTEGRAL_COEF);
       mPrevDiffBrightness = 50.0;
-      mPrevTime = getUptime();
+      mPrevTime = mUptime->getUptime();
       mIntegral = 0.0;
       mBaseSpeed = GET("speed", double, BASE_SPEED);
       printf("  edge:  %f\n"
@@ -66,50 +66,24 @@ void LineWalker::reset(const ScenarioParams& params) {
              mBaseSpeed);
 }
 
-/**
- * 走行する
- */
-void LineWalker::run() {
-    // 反射光の強さを取得する
-    double brightness = getBrightness();
-
-    // 走行を行う
-    double steeringAmount = steeringAmountCalculation(brightness);
-    int leftMotorPower, rightMotorPower;  // 左右モータ設定パワー
-
-    /* 左右モータ駆動パワーの計算 */
-    leftMotorPower = (int)round(mBaseSpeed + (steeringAmount * mEdge));
-    rightMotorPower = (int)round(mBaseSpeed - (steeringAmount * mEdge));
-    // printf(" l: %f r: %f",
-    //        mBaseSpeed + (steeringAmount * mEdge),
-    //        mBaseSpeed - (steeringAmount * mEdge));
-    // printf(" left: %d right: %d\n", leftMotorPower, rightMotorPower);
-
-    /* 左右モータ駆動パワーの設定 */
-    setDriveParam(leftMotorPower, rightMotorPower);
-}
-
-/**
- * ステアリング操舵量の計算をする
- * @return ステアリング操舵量
- */
-double LineWalker::steeringAmountCalculation(double brightness) {
-
+bool LineWalker::execute() {
     double targetBrightness;  // 目標輝度値
     double diffBrightness;    // 目標輝度との差分値
-    double steeringAmount;    // ステアリング操舵量
     double p, i, d;           // PIDの各計算値
     
-    double now = getUptime();    // 起動時間取得
+    double now = mUptime->getUptime();    // 起動時間取得
     double duration = now - mPrevTime;   // 処理周期を計算
     mPrevTime = now;
     // printf("duration: %f\n", duration);
+
+    // 反射光の強さを取得する
+    double brightness = mLineMonitor->getBrightness();
 
     /* 目標輝度値の計算 */
     targetBrightness = (mWhilteBrightness - mBlackBrightness) / 2;
 
     /* 目標輝度値と反射光の強さの差分を計算 */
-    diffBrightness = brightness - targetBrightness;
+    diffBrightness = targetBrightness - brightness;
 
     /* 積分を求める */
     mIntegral += (diffBrightness + mPrevDiffBrightness) * duration / 2;
@@ -124,12 +98,14 @@ double LineWalker::steeringAmountCalculation(double brightness) {
     i = mIntegral * mIntegralCoef;
 
     /* ステアリング操舵量を計算 */
-    steeringAmount = p + i + d;
+    mSteeringAmount = (p + i + d) * mEdge;
     // printf(" meas: %f tgt: %f steer: %f difdif: %f\n",
-    //         brightness, targetBrightness, steeringAmount, diffBrightness-mPrevDiffBrightness);
+    //         brightness, targetBrightness, mSteeringAmount, diffBrightness-mPrevDiffBrightness);
 
     /* 今回の差分を格納 */
     mPrevDiffBrightness = diffBrightness;
 
-    return steeringAmount;
+    return true;
 }
+
+Control LineWalker::get() { return Control(mBaseSpeed, mSteeringAmount); }
