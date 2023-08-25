@@ -11,6 +11,7 @@ APPL_CXXOBJS += \
 	Detector.o \
 	Starter.o \
 	Timer.o \
+	Odometer.o \
 	ColorDetector.o \
 	ColorAmplification.o \
 	ExitColoredArea.o \
