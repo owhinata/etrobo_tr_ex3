@@ -20,6 +20,7 @@ APPL_CXXOBJS += \
 	Walker.o \
 	StayInPlace.o \
 	LineWalker.o \
+	StepLineWalker.o \
 	SampleWalker.o \
 	Driver.o \
 	Diagnostics.o
