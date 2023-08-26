@@ -30,6 +30,7 @@
 #include "SwitchEdgeDetector.h"
 #include "StayInPlace.h"
 #include "LineWalker.h"
+#include "StepLineWalker.h"
 #include "SampleWalker.h"
 #include "Driver.h"
 #include "Diagnostics.h"
@@ -79,6 +80,7 @@ static Driver          *gDriver;
 
 static StayInPlace     *gStayInPlace;
 static LineWalker      *gLineWalker;
+static StepLineWalker  *gStepLineWalker;
 static SampleWalker    *gSampleWalker;
 
 static ScenarioWalker  *gScenarioWalker;
@@ -131,11 +133,13 @@ static void user_system_create() {
 
     gStayInPlace = new StayInPlace();
     gLineWalker = new LineWalker(gUptime, gLineMonitor);
+    gStepLineWalker = new StepLineWalker(gUptime, gLineMonitor);
     gSampleWalker = new SampleWalker();
 
     Walker* walkers[] = {
         gStayInPlace,
         gLineWalker,
+        gStepLineWalker,
         gSampleWalker,
     };
 
@@ -157,6 +161,7 @@ static void user_system_destroy() {
 
     delete gScenarioWalker;
     delete gSampleWalker;
+    delete gStepLineWalker;
     delete gLineWalker;
     delete gStayInPlace;
     delete gDriver;
