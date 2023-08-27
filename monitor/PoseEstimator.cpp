@@ -10,7 +10,7 @@
 class PoseEstimator::Impl {
   ev3api::Motor& left;
   ev3api::Motor& right;
-  ev3api::GyroSensor* gyro;
+  ev3api::GyroSensor& gyro;
   Diagnostics* diag;
 
   double radius;
@@ -21,7 +21,7 @@ class PoseEstimator::Impl {
   double lc0, rc0;
 
 public:
-  Impl(ev3api::Motor& _left, ev3api::Motor& _right, ev3api::GyroSensor* _gyro,
+  Impl(ev3api::Motor& _left, ev3api::Motor& _right, ev3api::GyroSensor& _gyro,
        Diagnostics* _diag)
     : left(_left), right(_right), gyro(_gyro), diag(_diag) {}
 
@@ -36,7 +36,7 @@ public:
            radius, tread);
     left.reset();
     right.reset();
-    if (gyro) gyro->reset();
+    gyro.reset();
     lc0 = float(left.getCount());
     rc0 = float(right.getCount());
     distance = 0.0;
@@ -46,8 +46,8 @@ public:
   bool update() {
     double lc = float(left.getCount()),
            rc = float(right.getCount()),
-           yaw = gyro ? float(gyro->getAngle()) : 0.0,
-           w = gyro ? float(gyro->getAnglerVelocity()) : 0.0;
+           yaw = float(gyro.getAngle()),
+           w = float(gyro.getAnglerVelocity());
 
     double dl = M_PI * radius * (lc - lc0) / 180.0,
            dr = M_PI * radius * (rc - rc0) / 180.0,
@@ -76,7 +76,7 @@ public:
 };
 
 PoseEstimator::PoseEstimator(ev3api::Motor& left, ev3api::Motor& right,
-                             ev3api::GyroSensor* gyro, Diagnostics* diag)
+                             ev3api::GyroSensor& gyro, Diagnostics* diag)
   : mImpl(new Impl(left, right, gyro, diag)) {}
 
 PoseEstimator::~PoseEstimator() { delete mImpl; }
