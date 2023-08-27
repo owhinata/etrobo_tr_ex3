@@ -9,48 +9,23 @@
           "detector": { "class": "Starter" }
         },
         {
-          "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "ki": 0.0, "speed": 50.0 },
-          "detector": { "class": "Odometer", "params": { "distance": 0.30 } }
+          "class": "StepLineWalker",
+          "params": { "edge": 1.0, "target": 50.0, "speed": 50.0, "sp1": 90.0, "kp": 0.50, "kd": 0.08, "ki": 0.0 },
+          "detector": { "class": "Odometer", "params": { "distance": 5.55 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "kd": 0.08, "ki": 0.25, "speed": 92.0 },
-          "detector": { "class": "Odometer", "params": { "distance": 2.50 } }
-        },
-        {
-          "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "ki": 0.25, "speed": 50.0 },
-          "detector": { "class": "Odometer", "params": { "distance": 0.45 } }
-        },
-        {
-          "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "kd": 0.08, "ki": 0.25, "speed": 92.0 },
-          "detector": { "class": "Odometer", "params": { "distance": 1.55 } }
-        },
-        {
-          "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.08, "ki": 0.25, "speed": 50.0 },
-          "detector": { "class": "Odometer", "params": { "distance": 0.6 } }
-        },
-        {
-          "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.2, "kd": 0.02, "ki": 0.0, "speed": 50.0 },
+          "params": { "edge": 1.0, "target": 50.0, "speed": 55.0, "kp": 0.2, "kd": 0.02, "ki": 0.0 },
           "detector": { "class": "ColorAmplification", "params": { "hue": 204.0, "count": 3, "amplification": 4.0 } }
         },
         {
           "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 124.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "ki": 0.0, "speed": 45.0 },
+          "params": { "edge": 1.0, "target": 60.0, "speed": 50.0, "kp": 0.5, "kd": 0.02, "ki": 0.0 },
           "detector": { "class": "ExitColoredArea", "params": { "attenuation": 0.5, "count": 3 } }
         },
         {
-          "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.5, "kd": 0.02, "ki": 0.25, "speed": 50.0 },
-          "detector": { "class": "Odometer", "params": { "distance": 0.1 } }
-        },
-        {
-          "class": "LineWalker",
-          "params": { "edge": 1.0, "white": 100.0, "black": 0.0, "kp": 0.32, "kd": 0.08, "ki": 0.25, "speed": 92.0 },
+          "class": "StepLineWalker",
+          "params": { "edge": 1.0, "target": 50.0, "speed": 50.0, "sp1": 90.0, "kp": 0.50, "kd": 0.08, "ki": 0.0 },
           "detector": { "class": "ColorDetector", "params": { "hue": 0.0, "saturation": 0.36, "count": 3 } }
         },
         {

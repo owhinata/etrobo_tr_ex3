@@ -10,8 +10,8 @@
 #include "app.h"
 
 #include "ColorSensor.h"
-#include "GyroSensor.h"
-#include "SonarSensor.h"
+//#include "GyroSensor.h"
+//#include "SonarSensor.h"
 #include "TouchSensor.h"
 #include "Motor.h"
 #include "Clock.h"
@@ -30,6 +30,7 @@
 #include "SwitchEdgeDetector.h"
 #include "StayInPlace.h"
 #include "LineWalker.h"
+#include "StepLineWalker.h"
 #include "SampleWalker.h"
 #include "Driver.h"
 #include "Diagnostics.h"
@@ -40,8 +41,8 @@
 
 // using宣言
 using ev3api::ColorSensor;
-using ev3api::GyroSensor;
-using ev3api::SonarSensor;
+//using ev3api::GyroSensor;
+//using ev3api::SonarSensor;
 using ev3api::TouchSensor;
 using ev3api::Motor;
 using ev3api::Clock;
@@ -49,8 +50,8 @@ using ev3api::Clock;
 // Device objects
 // オブジェクトを静的に確保する
 ColorSensor gColorSensor(PORT_2);
-GyroSensor  gGyroSensr(PORT_4);
-SonarSensor gSonarSensor(PORT_3);
+//GyroSensor  gGyroSensr(PORT_4);
+//SonarSensor gSonarSensor(PORT_3);
 TouchSensor gTouchSensor(PORT_1);
 Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
@@ -79,6 +80,7 @@ static Driver          *gDriver;
 
 static StayInPlace     *gStayInPlace;
 static LineWalker      *gLineWalker;
+static StepLineWalker  *gStepLineWalker;
 static SampleWalker    *gSampleWalker;
 
 static ScenarioWalker  *gScenarioWalker;
@@ -96,7 +98,9 @@ static void user_system_create() {
 
     gUptime = new Uptime(gClock, gDiagnostics);
     gLineMonitor = new LineMonitor(gColorSensor, gDiagnostics);
-    gPoseEstimator = new PoseEstimator(gLeftWheel, gRightWheel, gGyroSensr,
+    // gPoseEstimator = new PoseEstimator(gLeftWheel, gRightWheel, gGyroSensr,
+    //                                    gDiagnostics);
+    gPoseEstimator = new PoseEstimator(gLeftWheel, gRightWheel, NULL,
                                        gDiagnostics);
 
     Monitor* monitors[] = {
@@ -131,11 +135,13 @@ static void user_system_create() {
 
     gStayInPlace = new StayInPlace();
     gLineWalker = new LineWalker(gUptime, gLineMonitor);
+    gStepLineWalker = new StepLineWalker(gUptime, gLineMonitor);
     gSampleWalker = new SampleWalker();
 
     Walker* walkers[] = {
         gStayInPlace,
         gLineWalker,
+        gStepLineWalker,
         gSampleWalker,
     };
 
@@ -157,6 +163,7 @@ static void user_system_destroy() {
 
     delete gScenarioWalker;
     delete gSampleWalker;
+    delete gStepLineWalker;
     delete gLineWalker;
     delete gStayInPlace;
     delete gDriver;

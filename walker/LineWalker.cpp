@@ -11,12 +11,12 @@
 // 定数宣言
 static const double RIGHT_EDGE  = 1.0;      // 左エッジ
 static const double LEFT_EDGE   = -1.0;     // 右エッジ
-static const double WHITE_BRIGHTNESS  = 140.0;      // カラーセンサの輝度設定用
-static const double BLACK_BRIGHTNESS  = 10.0;      // カラーセンサの輝度設定用
-static const double STEERING_COEF  = 0.3;      // ステアリング操舵量の係数
+static const double WHITE_BRIGHTNESS  = 100.0;      // カラーセンサの輝度設定用
+static const double BLACK_BRIGHTNESS  = 0.0;      // カラーセンサの輝度設定用
+static const double STEERING_COEF  = 0.5;      // ステアリング操舵量の係数
 static const double DIFFERENTIAL_COEF = 0.08;   // D制御の係数
-static const double INTEGRAL_COEF = 0.25;       // I制御の係数
-static const double BASE_SPEED  = 30.0;      // 走行標準スピード
+static const double INTEGRAL_COEF = 0.0;       // I制御の係数
+static const double BASE_SPEED  = 50.0;      // 走行標準スピード
 
 /**
  * コンストラクタ
@@ -45,8 +45,13 @@ void LineWalker::reset(const ScenarioParams& params) {
       #define GET(a, b, c) params.get(a, &val) ? b(val) : c
       double val;
       mEdge = GET("edge", double, LEFT_EDGE);
-      mWhilteBrightness = GET("white", double, WHITE_BRIGHTNESS);
-      mBlackBrightness = GET("black", double, BLACK_BRIGHTNESS);
+      if (params.get("target", &val)) {
+        mWhilteBrightness = val * 2.0;
+        mBlackBrightness = 0.0;
+      } else {
+        mWhilteBrightness = GET("white", double, WHITE_BRIGHTNESS);
+        mBlackBrightness = GET("black", double, BLACK_BRIGHTNESS);
+      }
       mSteeringCoef = GET("kp", double, STEERING_COEF);
       mDifferentialCoef = GET("kd", double, DIFFERENTIAL_COEF);
       mIntegralCoef = GET("ki", double, INTEGRAL_COEF);
@@ -54,16 +59,33 @@ void LineWalker::reset(const ScenarioParams& params) {
       mPrevTime = mUptime->getUptime();
       mIntegral = 0.0;
       mBaseSpeed = GET("speed", double, BASE_SPEED);
-      printf("  edge:  %f\n"
-             "  white: %f\n"
-             "  black: %f\n"
-             "  kp:    %f\n"
-             "  kd:    %f\n"
-             "  ki:    %f\n"
-             "  speed: %f\n",
-             mEdge, mWhilteBrightness, mBlackBrightness,
-             mSteeringCoef, mDifferentialCoef, mIntegralCoef,
-             mBaseSpeed);
+      printf("  edge:   %f\n"
+             "  target: %f\n"
+             "  speed:  %f\n"
+             "  kp:     %f\n"
+             "  kd:     %f\n"
+             "  ki:     %f\n",
+             mEdge, (mWhilteBrightness - mBlackBrightness) / 2.0,
+             mBaseSpeed, mSteeringCoef, mDifferentialCoef, mIntegralCoef);
+}
+
+void LineWalker::setParam(double speed, double kp, double kd, double ki) {
+    mBaseSpeed = speed;
+    mSteeringCoef = kp;
+    mDifferentialCoef = kd;
+    mIntegralCoef = ki;
+}
+
+void LineWalker::getParam(double* target, double* speed, double* kp, double* kd, double* ki) {
+    if (target) *target = (mWhilteBrightness - mBlackBrightness) / 2.0;
+    if (speed) *speed = mBaseSpeed;
+    if (kp) *kp = mSteeringCoef;
+    if (kd) *kd = mDifferentialCoef;
+    if (ki) *ki = mIntegralCoef;
+}
+
+void LineWalker::clearIntegral() {
+    mIntegral = 0.0;
 }
 
 bool LineWalker::execute() {

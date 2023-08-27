@@ -27,6 +27,11 @@ public:
 
     virtual Control get();
 
+protected:
+    void setParam(double speed, double kp, double kd, double ki);
+    void getParam(double* target, double* speed, double* kp, double* kd, double* ki);
+    void clearIntegral();
+
 private:
     Uptime* mUptime;
     LineMonitor* mLineMonitor;
