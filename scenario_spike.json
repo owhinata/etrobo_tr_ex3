@@ -58,9 +58,9 @@
     {
       "class": "LineMonitor",
       "params": {
-        "rgain": 1.0,
-        "ggain": 1.0,
-        "bgain": 1.0
+        "rgain": 0.706250,
+        "ggain": 0.625000,
+        "bgain": 0.587500
       }
     }
   ]
