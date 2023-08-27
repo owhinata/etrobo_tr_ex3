@@ -23,6 +23,7 @@
 #include "Starter.h"
 #include "Timer.h"
 #include "Odometer.h"
+#include "Rotation.h"
 #include "ColorDetector.h"
 #include "ColorAmplification.h"
 #include "ExitColoredArea.h"
@@ -31,7 +32,7 @@
 #include "StayInPlace.h"
 #include "LineWalker.h"
 #include "StepLineWalker.h"
-#include "SampleWalker.h"
+#include "RotationWalker.h"
 #include "Driver.h"
 #include "Diagnostics.h"
 
@@ -70,6 +71,7 @@ static PoseEstimator   *gPoseEstimator;
 static Starter         *gStarter;
 static Timer           *gTimer;
 static Odometer        *gOdometer;
+static Rotation        *gRotation;
 static ColorDetector   *gColorDetector;
 static ColorAmplification *gColorAmplification;
 static ExitColoredArea *gExitColoredArea;
@@ -81,7 +83,7 @@ static Driver          *gDriver;
 static StayInPlace     *gStayInPlace;
 static LineWalker      *gLineWalker;
 static StepLineWalker  *gStepLineWalker;
-static SampleWalker    *gSampleWalker;
+static RotationWalker  *gRotationWalker;
 
 static ScenarioWalker  *gScenarioWalker;
 
@@ -110,6 +112,7 @@ static void user_system_create() {
     gStarter = new Starter(gTouchSensor);
     gTimer = new Timer(gUptime);
     gOdometer = new Odometer(gPoseEstimator, gDiagnostics);
+    gRotation = new Rotation(gPoseEstimator, gDiagnostics);
     gColorDetector = new ColorDetector(gLineMonitor);
     gColorAmplification =
         new ColorAmplification(gLineMonitor, gUptime, gDiagnostics);
@@ -122,6 +125,7 @@ static void user_system_create() {
         gStarter,
         gTimer,
         gOdometer,
+        gRotation,
         gColorDetector,
         gColorAmplification,
         gExitColoredArea,
@@ -134,13 +138,13 @@ static void user_system_create() {
     gStayInPlace = new StayInPlace();
     gLineWalker = new LineWalker(gUptime, gLineMonitor);
     gStepLineWalker = new StepLineWalker(gUptime, gLineMonitor);
-    gSampleWalker = new SampleWalker();
+    gRotationWalker = new RotationWalker(gPoseEstimator, gUptime);
 
     Walker* walkers[] = {
         gStayInPlace,
         gLineWalker,
         gStepLineWalker,
-        gSampleWalker,
+        gRotationWalker,
     };
 
     gScenarioWalker = new ScenarioWalker(gScenarioReader, gDriver,
@@ -160,7 +164,7 @@ static void user_system_destroy() {
     gRightWheel.reset();
 
     delete gScenarioWalker;
-    delete gSampleWalker;
+    delete gRotationWalker;
     delete gStepLineWalker;
     delete gLineWalker;
     delete gStayInPlace;
@@ -170,6 +174,7 @@ static void user_system_destroy() {
     delete gColoredToWhite;
     delete gColorAmplification;
     delete gColorDetector;
+    delete gRotation;
     delete gOdometer;
     delete gTimer;
     delete gStarter;

@@ -12,6 +12,7 @@ APPL_CXXOBJS += \
 	Starter.o \
 	Timer.o \
 	Odometer.o \
+	Rotation.o \
 	ColorDetector.o \
 	ColorAmplification.o \
 	ExitColoredArea.o \
@@ -21,7 +22,7 @@ APPL_CXXOBJS += \
 	StayInPlace.o \
 	LineWalker.o \
 	StepLineWalker.o \
-	SampleWalker.o \
+	RotationWalker.o \
 	Driver.o \
 	Diagnostics.o
 

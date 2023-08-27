@@ -36,6 +36,40 @@
 
 
     {
+      "name": "RotationTest",
+      "scenes": [
+        {
+          "class": "StayInPlace",
+          "detector": { "class": "Starter" }
+        },
+        {
+          "class": "RotationWalker",
+          "params": { "speed": 30.0 },
+          "detector": { "class": "Rotation", "params": { "angle": 90.0 } }
+        },
+        {
+          "class": "StayInPlace",
+          "detector": { "class": "Timer", "params": { "timeout": 0.2 } }
+        },
+        {
+          "class": "RotationWalker",
+          "params": { "speed": 30.0 },
+          "detector": { "class": "Rotation", "params": { "angle": 45.0 } }
+        },
+        {
+          "class": "StayInPlace",
+          "detector": { "class": "Timer", "params": { "timeout": 0.2 } }
+        },
+        {
+          "class": "RotationWalker",
+          "params": { "speed": -30.0 },
+          "detector": { "class": "Rotation", "params": { "angle": 135.0 } }
+        }
+      ]
+    },
+
+
+    {
       "name": "L-course",
       "scenes": [
         {
