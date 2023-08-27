@@ -21,7 +21,7 @@ struct Pose {
 class PoseEstimator : public Monitor {
 public:
   PoseEstimator(ev3api::Motor& left, ev3api::Motor& right,
-                ev3api::GyroSensor& gyro, Diagnostics* diag);
+                ev3api::GyroSensor* gyro, Diagnostics* diag);
 
   virtual ~PoseEstimator();
 
