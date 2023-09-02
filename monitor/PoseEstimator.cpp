@@ -51,7 +51,7 @@ public:
 
     double dl = M_PI * radius * (lc - lc0) / 180.0,
            dr = M_PI * radius * (rc - rc0) / 180.0,
-           d = (dr + dl) / 2.0;
+           d = (fabs(dr) + fabs(dl)) / 2.0;
 
     distance += d;
 
@@ -72,7 +72,7 @@ public:
 
   Pose getPose() { return pose; }
 
-  double getDistance() { return distance; }
+  double getDistance() { printf("distance:%lf\n" ,distance); return distance; }
 };
 
 PoseEstimator::PoseEstimator(ev3api::Motor& left, ev3api::Motor& right,
