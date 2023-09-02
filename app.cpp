@@ -11,7 +11,7 @@
 
 #include "ColorSensor.h"
 #include "GyroSensor.h"
-#include "SonarSensor.h"
+// #include "SonarSensor.h"
 #include "TouchSensor.h"
 #include "Motor.h"
 #include "Clock.h"
@@ -43,7 +43,7 @@
 // using宣言
 using ev3api::ColorSensor;
 using ev3api::GyroSensor;
-using ev3api::SonarSensor;
+// using ev3api::SonarSensor;
 using ev3api::TouchSensor;
 using ev3api::Motor;
 using ev3api::Clock;
@@ -52,7 +52,7 @@ using ev3api::Clock;
 // オブジェクトを静的に確保する
 ColorSensor gColorSensor(PORT_2);
 GyroSensor  gGyroSensr(PORT_4);
-SonarSensor gSonarSensor(PORT_3);
+// SonarSensor gSonarSensor(PORT_3);
 TouchSensor gTouchSensor(PORT_1);
 Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
