@@ -5,6 +5,7 @@
 
 #include "ColorAmplification.h"
 
+#include <math.h>
 #include <string.h>
 
 class ColorAmplification::Impl {
@@ -40,9 +41,19 @@ public:
            hue, count, amplification);
   }
 
+  static double normalize(double angle, double base) {
+    double min = base - 180.0;
+    angle = fmod(angle - min, 360) + min;
+    if (angle < min) {
+      angle += 360;
+    }
+    return angle;
+  }
+
   bool on() {
     hsv_raw_t hsv = color->getHsvColor();
-    if (hsv.h > hue - 30 && hsv.h < hue + 30) {
+    double h = normalize(hsv.h, hue);
+    if (h > hue - 30 && h < hue + 30) {
       ++detected;
     } else {
       detected = 0;
