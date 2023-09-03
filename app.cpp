@@ -33,6 +33,7 @@
 #include "LineWalker.h"
 #include "StepLineWalker.h"
 #include "RotationWalker.h"
+#include "RelativeTargetWalker.h"
 #include "Driver.h"
 #include "Diagnostics.h"
 
@@ -84,6 +85,7 @@ static StayInPlace     *gStayInPlace;
 static LineWalker      *gLineWalker;
 static StepLineWalker  *gStepLineWalker;
 static RotationWalker  *gRotationWalker;
+static RelativeTargetWalker *gRelativeTargetWalker;
 
 static ScenarioWalker  *gScenarioWalker;
 
@@ -121,6 +123,14 @@ static void user_system_create() {
     gColoredToWhite = new ColoredToWhite(gLineMonitor, gUptime, gDiagnostics);
     gSwithEdgeDetector = new SwitchEdgeDetector(gLineMonitor);
 
+    gDriver = new Driver(gLeftWheel, gRightWheel, gDiagnostics);
+
+    gStayInPlace = new StayInPlace();
+    gLineWalker = new LineWalker(gUptime, gLineMonitor);
+    gStepLineWalker = new StepLineWalker(gUptime, gLineMonitor);
+    gRotationWalker = new RotationWalker(gPoseEstimator, gUptime);
+    gRelativeTargetWalker = new RelativeTargetWalker(gPoseEstimator, gUptime);
+
     Detector* detectors[] = {
         gStarter,
         gTimer,
@@ -131,20 +141,15 @@ static void user_system_create() {
         gExitColoredArea,
         gColoredToWhite,
         gSwithEdgeDetector,
+        gRelativeTargetWalker->getDetector(),
     };
-
-    gDriver = new Driver(gLeftWheel, gRightWheel, gDiagnostics);
-
-    gStayInPlace = new StayInPlace();
-    gLineWalker = new LineWalker(gUptime, gLineMonitor);
-    gStepLineWalker = new StepLineWalker(gUptime, gLineMonitor);
-    gRotationWalker = new RotationWalker(gPoseEstimator, gUptime);
 
     Walker* walkers[] = {
         gStayInPlace,
         gLineWalker,
         gStepLineWalker,
         gRotationWalker,
+        gRelativeTargetWalker,
     };
 
     gScenarioWalker = new ScenarioWalker(gScenarioReader, gDriver,
@@ -164,6 +169,7 @@ static void user_system_destroy() {
     gRightWheel.reset();
 
     delete gScenarioWalker;
+    delete gRelativeTargetWalker;
     delete gRotationWalker;
     delete gStepLineWalker;
     delete gLineWalker;

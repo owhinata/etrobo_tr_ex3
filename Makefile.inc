@@ -23,6 +23,7 @@ APPL_CXXOBJS += \
 	LineWalker.o \
 	StepLineWalker.o \
 	RotationWalker.o \
+	RelativeTargetWalker.o \
 	Driver.o \
 	Diagnostics.o
 
