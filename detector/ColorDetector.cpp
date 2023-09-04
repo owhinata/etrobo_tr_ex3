@@ -5,6 +5,8 @@
 
 #include "ColorDetector.h"
 
+#include <math.h>
+
 static const double HUE = 204.0;
 static const double SATURATION = 0.36;
 static const int COUNT = 10;
@@ -35,9 +37,19 @@ public:
            hue, saturation, count);
   }
 
+  static double normalize(double angle, double base) {
+    double min = base - 180.0;
+    angle = fmod(angle - min, 360) + min;
+    if (angle < min) {
+      angle += 360;
+    }
+    return angle;
+  }
+
   bool on() {
     hsv = sensor->getHsvColor();
-    if (hsv.h > hue - 30 && hsv.h < hue + 30) {
+    double h = normalize(hsv.h, hue);
+    if (h > hue - 30 && h < hue + 30) {
       ++detected;
     } else {
       detected = 0;
