@@ -14,6 +14,7 @@ APPL_CXXOBJS += \
 	Odometer.o \
 	Rotation.o \
 	ColorDetector.o \
+	LineDetector.o \
 	ColorAmplification.o \
 	ExitColoredArea.o \
 	ColoredToWhite.o \

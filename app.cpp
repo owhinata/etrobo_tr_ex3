@@ -25,6 +25,7 @@
 #include "Odometer.h"
 #include "Rotation.h"
 #include "ColorDetector.h"
+#include "LineDetector.h"
 #include "ColorAmplification.h"
 #include "ExitColoredArea.h"
 #include "ColoredToWhite.h"
@@ -73,6 +74,7 @@ static Timer           *gTimer;
 static Odometer        *gOdometer;
 static Rotation        *gRotation;
 static ColorDetector   *gColorDetector;
+static LineDetector    *gLineDetector;
 static ColorAmplification *gColorAmplification;
 static ExitColoredArea *gExitColoredArea;
 static ColoredToWhite  *gColoredToWhite;
@@ -114,6 +116,7 @@ static void user_system_create() {
     gOdometer = new Odometer(gPoseEstimator, gDiagnostics);
     gRotation = new Rotation(gPoseEstimator, gDiagnostics);
     gColorDetector = new ColorDetector(gLineMonitor);
+    gLineDetector = new LineDetector(gLineMonitor, gUptime);
     gColorAmplification =
         new ColorAmplification(gLineMonitor, gUptime, gDiagnostics);
     gExitColoredArea =
@@ -127,6 +130,7 @@ static void user_system_create() {
         gOdometer,
         gRotation,
         gColorDetector,
+        gLineDetector,
         gColorAmplification,
         gExitColoredArea,
         gColoredToWhite,
@@ -173,6 +177,7 @@ static void user_system_destroy() {
     delete gExitColoredArea;
     delete gColoredToWhite;
     delete gColorAmplification;
+    delete gLineDetector;
     delete gColorDetector;
     delete gRotation;
     delete gOdometer;
