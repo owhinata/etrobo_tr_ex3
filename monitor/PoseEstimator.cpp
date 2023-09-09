@@ -51,9 +51,9 @@ public:
 
     double dl = M_PI * radius * (lc - lc0) / 180.0,
            dr = M_PI * radius * (rc - rc0) / 180.0,
-           d = (fabs(dr) + fabs(dl)) / 2.0;
+           d = (dr + dl) / 2.0;
 
-    distance += d;
+    distance += fabs(d);
 
     double rz = pose.rz + (dr - dl) / tread,
            px = pose.px + d * cos(rz),
