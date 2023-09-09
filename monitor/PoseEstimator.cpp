@@ -19,6 +19,7 @@ class PoseEstimator::Impl {
   Pose pose;
   double distance;
   double lc0, rc0;
+  double yaw0;
 
 public:
   Impl(ev3api::Motor& _left, ev3api::Motor& _right, ev3api::GyroSensor& _gyro,
@@ -39,14 +40,24 @@ public:
     gyro.reset();
     lc0 = float(left.getCount());
     rc0 = float(right.getCount());
+    yaw0 = -float(gyro.getAngle()),
     distance = 0.0;
     pose.px = pose.py = pose.rz = 0.0;
+  }
+
+  static double normalize(double angle, double base) {
+    double min = base - 180.0;
+    angle = fmod(angle - min, 360) + min;
+    if (angle < min) {
+      angle += 360;
+    }
+    return angle;
   }
 
   bool update() {
     double lc = float(left.getCount()),
            rc = float(right.getCount()),
-           yaw = float(gyro.getAngle()),
+           yaw = -float(gyro.getAngle()),
            w = float(gyro.getAnglerVelocity());
 
     double dl = M_PI * radius * (lc - lc0) / 180.0,
@@ -64,7 +75,11 @@ public:
     pose.rz = rz;
     lc0 = lc;
     rc0 = rc;
-  
+
+    yaw = normalize(yaw, yaw0);
+    yaw0 = yaw;
+    yaw *= M_PI / 180.0;
+
     diag->setMeasure(lc, rc, yaw, w, px, py, rz, distance);
 
     return true;
