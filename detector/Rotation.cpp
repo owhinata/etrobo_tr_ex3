@@ -26,7 +26,7 @@ public:
   }
 
   bool on() {
-    printf("abs:%lf", pose->getPose().rz - base); return fabs(pose->getPose().rz - base) > M_PI / 180.0 * angle;
+    return fabs(pose->getPose().rz - base) > M_PI / 180.0 * angle;
   }
 };
 

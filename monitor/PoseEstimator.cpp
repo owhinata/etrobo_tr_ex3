@@ -72,7 +72,7 @@ public:
 
   Pose getPose() { return pose; }
 
-  double getDistance() { printf("distance:%lf\n" ,distance); return distance; }
+  double getDistance() { return distance; }
 };
 
 PoseEstimator::PoseEstimator(ev3api::Motor& left, ev3api::Motor& right,
