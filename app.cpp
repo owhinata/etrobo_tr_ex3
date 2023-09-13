@@ -34,6 +34,7 @@
 #include "LineWalker.h"
 #include "StepLineWalker.h"
 #include "RotationWalker.h"
+#include "TreasureWalker.h"
 #include "Driver.h"
 #include "Diagnostics.h"
 
@@ -57,6 +58,7 @@ GyroSensor  gGyroSensr(PORT_4);
 TouchSensor gTouchSensor(PORT_1);
 Motor       gLeftWheel(PORT_C);
 Motor       gRightWheel(PORT_B);
+Motor       gArmMotor(PORT_A);
 Clock       gClock;
 
 static int diag_exit_;
@@ -86,6 +88,7 @@ static StayInPlace     *gStayInPlace;
 static LineWalker      *gLineWalker;
 static StepLineWalker  *gStepLineWalker;
 static RotationWalker  *gRotationWalker;
+static TreasureWalker  *gTreasureWalker;
 
 static ScenarioWalker  *gScenarioWalker;
 
@@ -143,12 +146,14 @@ static void user_system_create() {
     gLineWalker = new LineWalker(gUptime, gLineMonitor);
     gStepLineWalker = new StepLineWalker(gUptime, gLineMonitor);
     gRotationWalker = new RotationWalker(gPoseEstimator, gUptime);
+    gTreasureWalker = new TreasureWalker(gArmMotor);
 
     Walker* walkers[] = {
         gStayInPlace,
         gLineWalker,
         gStepLineWalker,
         gRotationWalker,
+        gTreasureWalker
     };
 
     gScenarioWalker = new ScenarioWalker(gScenarioReader, gDriver,
@@ -166,9 +171,11 @@ static void user_system_create() {
 static void user_system_destroy() {
     gLeftWheel.reset();
     gRightWheel.reset();
+    gArmMotor.reset();
 
     delete gScenarioWalker;
     delete gRotationWalker;
+    delete gTreasureWalker;
     delete gStepLineWalker;
     delete gLineWalker;
     delete gStayInPlace;
