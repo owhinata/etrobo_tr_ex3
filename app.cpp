@@ -146,7 +146,7 @@ static void user_system_create() {
     gLineWalker = new LineWalker(gUptime, gLineMonitor);
     gStepLineWalker = new StepLineWalker(gUptime, gLineMonitor);
     gRotationWalker = new RotationWalker(gPoseEstimator, gUptime);
-    gTreasureWalker = new TreasureWalker(gArmMotor);
+    gTreasureWalker = new TreasureWalker(gArmMotor, gLineMonitor);
 
     Walker* walkers[] = {
         gStayInPlace,

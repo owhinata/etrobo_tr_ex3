@@ -11,10 +11,11 @@
 
 #include "Walker.h"
 #include "Motor.h"
+#include "LineMonitor.h"
 
 class TreasureWalker : public Walker {
 public:
-    TreasureWalker(ev3api::Motor& armMotor);
+    TreasureWalker(ev3api::Motor& armMotor, LineMonitor* lineMonitor);
 
     virtual ~TreasureWalker();
 
@@ -28,6 +29,12 @@ public:
 
 private:
     ev3api::Motor& mArmMotor;
+    LineMonitor* mLineMonitor;
+    int mCount = 0;
+    int mPwm = 30;
+    int state;
+    double mPrevAngle = 0;
+    hsv_raw_t mHsv;
 };
 
 #endif  // EV3_WALKER_TREASURE_WALKER_H_

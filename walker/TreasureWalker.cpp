@@ -8,22 +8,13 @@
 
 #include "TreasureWalker.h"
 
-// 定数宣言
-static const double RIGHT_EDGE  = 1.0;      // 左エッジ
-static const double LEFT_EDGE   = -1.0;     // 右エッジ
-static const double WHITE_BRIGHTNESS  = 100.0;      // カラーセンサの輝度設定用
-static const double BLACK_BRIGHTNESS  = 0.0;      // カラーセンサの輝度設定用
-static const double STEERING_COEF  = 0.5;      // ステアリング操舵量の係数
-static const double DIFFERENTIAL_COEF = 0.08;   // D制御の係数
-static const double INTEGRAL_COEF = 0.0;       // I制御の係数
-static const double BASE_SPEED  = 50.0;      // 走行標準スピード
-
 /**
  * コンストラクタ
  * @param armMotor  アームモータ
  */
-TreasureWalker::TreasureWalker(ev3api::Motor& armMotor)
-    : mArmMotor(armMotor) {
+TreasureWalker::TreasureWalker(ev3api::Motor& armMotor, LineMonitor* lineMonitor)
+    : mArmMotor(armMotor),
+      mLineMonitor(lineMonitor) {
         TreasureWalker::reset();
 }
 
@@ -31,13 +22,13 @@ TreasureWalker::~TreasureWalker() {}
 
 const char* TreasureWalker::getClassName() const { return "TreasureWalker"; }
 
-/* 未実装 */
 void TreasureWalker::reset() {
-    int32_t angle;
-    int32_t prevAngle = 0;
+    double angle;
+    double prevAngle = 0;
     int i = 0;
+    state = 0;
     mArmMotor.setPWM(-30);
-    while (i < 5) {
+    while (i < 10) {
         angle = mArmMotor.getCount();
         if (angle == prevAngle) {
             i++;
@@ -51,14 +42,45 @@ void TreasureWalker::reset() {
 }
 
 bool TreasureWalker::execute() {
-    double angle = (float)mArmMotor.getCount();
-    // printf("angle=%f\n", angle);
-    if (angle < 20) {
+    double angle;
+    if (state == 0) {
+        angle = (float)mArmMotor.getCount();
         mArmMotor.setPWM(30);
-    } else {
-        mArmMotor.stop();
+        // printf("angle=%lf i=%d pwm=%d\n", angle, i, mPwm);
+        if (angle - 2 < mPrevAngle && mPrevAngle < angle + 2) {
+            mCount++;
+        } else {
+            mCount = 0;
+        }
+        if (mCount > 10) {
+            mArmMotor.stop();
+            mCount = 0;
+            ++state;
+        }
+        mPrevAngle = angle;
+    } else if (state == 1) {
+        mHsv = mLineMonitor->getHsvColor();
+        // printf("h=%lf s=%lf v=%lf\n", mHsv.h, mHsv.s, mHsv.v);
+        if (mCount > 10) {
+            mCount = 0;
+            ++state;
+        }
+    } else if (state == 2) {
+        angle = (float)mArmMotor.getCount();
+        mArmMotor.setPWM(-30);
+        // printf("angle=%lf i=%d pwm=%d\n", angle, i, mPwm);
+        if (angle - 2 < mPrevAngle && mPrevAngle < angle + 2) {
+            mCount++;
+        } else {
+            mCount = 0;
+        }
+        if (mCount > 10) {
+            mArmMotor.stop();
+            mCount = 0;
+            ++state;
+        }
+        mPrevAngle = angle;
     }
-
     return true;
 }
 
